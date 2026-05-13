@@ -20,7 +20,7 @@ export class App {
   tituloSistema: string = 'Gigo - Gestion de Incidente';
 
   //lista por ahora vacia
-  listaTicket: Ticket[] = [];
+  listaTickets: Ticket[] = [];
 
   //auxiliares
   nuevoSolicitante: string = '';
@@ -35,9 +35,10 @@ export class App {
       return;  
     }
 
+    //mi objeto para crear
     const nuevoIncidente: Ticket = {
 
-      id: this.listaTicket.length + 1,
+      id: this.listaTickets.length + 1,
       solicitante: this.nuevoSolicitante,
       equipoAsignado: this.nuevoEquipo,
       descripcion: this.nuevaDescripcion,
@@ -45,7 +46,7 @@ export class App {
     }
 
     //pusheo el ticket en la lista o sea en nuevo incidente
-    this.listaTicket.push(nuevoIncidente);
+    this.listaTickets.push(nuevoIncidente);
 
     //limpio
     this.nuevoSolicitante='';
