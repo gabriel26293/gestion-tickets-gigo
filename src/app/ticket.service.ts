@@ -14,17 +14,33 @@ export interface Ticket{
 export class TicketService {
 
   listaTickets: Ticket[] = [
-    /*{id_ticket: 1,
+    {
+    id_ticket: 1,
     solicitante: "Francisco Perez",
     descripcion: "Pc no enciende",
     equipoAsignado: "Notebook #123",
     abierto: true
-    }*/
+    }
   ];
+  
+  contadorId: number;
 
-  //al mudar la creacion a service no puedo leer pantalla entonces paso datos por parametros
+  // usamos el constructor para darle el valor inicial usando if/else y controlar los id de la lista
+  constructor() {    
+     if (this.listaTickets.length > 0) {
+      
+      const todosLosIds = this.listaTickets.map(ticket => ticket.id_ticket);      
+      
+      const idMasAlto = Math.max(...todosLosIds);      
+      
+      this.contadorId = idMasAlto + 1;
+      
+    } else {      
+       this.contadorId = 1;      
+      }
+  }
 
-  contadorId: number = 1;
+  //al mudar la creacion a service no puedo leer pantalla entonces paso datos por parametros  
   agregarTicket(solicitanteIngresado: string, equipoIngresado: string, descripcionIngresada: string) {
     const nuevoIncidente: Ticket = {
       id_ticket: this.contadorId,
