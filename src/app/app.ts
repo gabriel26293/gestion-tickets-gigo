@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TicketService, Ticket } from './ticket.service';
+import { DatePipe } from '@angular/common';
 
 //mudado#1 a service
 /*
@@ -14,7 +15,7 @@ interface Ticket{
 
 @Component({
   selector: 'app-root',
-  imports: [FormsModule],
+  imports: [FormsModule, DatePipe],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -85,7 +86,7 @@ export class App { //clase principal
   //parte de la mudanza hace esto: que la pantalla solo avisa y el servicio trabaja
   crearTicket() {
     if (this.nuevoSolicitante == '' || this.nuevaDescripcion == '') {
-      alert ("Por favor, complete al menos el solicitante y la descripcion.");
+      alert ("Por favor, complete los datos del solicitante y la descripcion.");
       return;  
     }
   

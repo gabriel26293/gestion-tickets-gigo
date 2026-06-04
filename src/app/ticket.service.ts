@@ -6,6 +6,7 @@ export interface Ticket{
   descripcion: string;
   equipoAsignado: string;
   abierto: boolean;
+  fechaCreacion: Date;
 }
 
 @Injectable({
@@ -19,7 +20,8 @@ export class TicketService {
     solicitante: "Francisco Perez",
     descripcion: "Pc no enciende",
     equipoAsignado: "Notebook #123",
-    abierto: true
+    abierto: true,
+    fechaCreacion: new Date ('2026-06-04T18:35:25'),
     }
   ];
   
@@ -47,7 +49,8 @@ export class TicketService {
       solicitante: solicitanteIngresado,
       equipoAsignado: equipoIngresado,
       descripcion: descripcionIngresada,
-      abierto: true 
+      abierto: true,
+      fechaCreacion: new Date(),
     };
     
     this.listaTickets.push(nuevoIncidente);
