@@ -31,14 +31,14 @@ export class App { //clase principal
   nuevaDescripcion: string = '';
 
   //uso el constructor de mi clase para aplicar la inyeccion de dependencia > Parte de la mudanza a service
-  constructor(private miServicio: TicketService) {}
+  constructor(private miServicio: TicketService) {} //encapsulo
 
-  //otra parte de la mudanza > uso el getter para que el html pueda leer mi lista
+  //otra parte de la mudanza > uso el metodo getter para que el html pueda leer mi lista
   get listaTickets(): Ticket[] {
     return this.miServicio.listaTickets;
   }
 
-  //objeto crear > valido datos vacios y los guardo 
+  //Parte de la mudanza: objeto crear > valido datos vacios y los guardo 
   /*crearTicket (){
     //valido datos vacios
     if (this.nuevoSolicitante == '' || this.nuevaDescripcion == ''){
@@ -46,7 +46,6 @@ export class App { //clase principal
       return;  
     }
     //Tengo ver si mas adelante le meto otra valadacion
-
 
     //mi objeto para crear
     const nuevoIncidente: Ticket = {
@@ -57,8 +56,6 @@ export class App { //clase principal
       descripcion: this.nuevaDescripcion,
       abierto: true
     }
-
-
 
     //pusheo el ticket en la lista (creo incidente y lo mando)
     this.listaTickets.push(nuevoIncidente);
@@ -91,14 +88,12 @@ export class App { //clase principal
       alert ("Por favor, complete al menos el solicitante y la descripcion.");
       return;  
     }
-
   
-    this.miServicio.agregarTicket(
+      this.miServicio.agregarTicket(
       this.nuevoSolicitante, 
       this.nuevoEquipo, 
       this.nuevaDescripcion
     );
-
    
     this.nuevoSolicitante = '';
     this.nuevoEquipo = '';

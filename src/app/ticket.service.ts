@@ -13,7 +13,14 @@ export interface Ticket{
 })
 export class TicketService {
 
-  listaTickets: Ticket[] = [];
+  listaTickets: Ticket[] = [
+    /*{id_ticket: 1,
+    solicitante: "Francisco Perez",
+    descripcion: "Pc no enciende",
+    equipoAsignado: "Notebook #123",
+    abierto: true
+    }*/
+  ];
 
   //al mudar la creacion a service no puedo leer pantalla entonces paso datos por parametros
 
