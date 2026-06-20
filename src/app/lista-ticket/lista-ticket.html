@@ -1,0 +1,69 @@
+<div style="margin-bottom: 20px; background-color: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+  <strong style="margin-right: 15px;">Filtrar Vista:</strong>
+  
+  <button (click)="cambiarFiltro('todos')" style="padding: 8px 15px; margin-right: 10px; cursor: pointer; background-color: #34495e; color: white; border: none; border-radius: 4px;">
+    📋 Todos
+  </button>
+  
+  <button (click)="cambiarFiltro('abiertos')" style="padding: 8px 15px; margin-right: 10px; cursor: pointer; background-color: #e74c3c; color: white; border: none; border-radius: 4px;">
+    🔥 Solo Abiertos
+  </button>
+  
+  <button (click)="cambiarFiltro('resueltos')" style="padding: 8px 15px; cursor: pointer; background-color: #2ecc71; color: white; border: none; border-radius: 4px;">
+    ✅ Solo Resueltos
+  </button>
+</div>
+
+<p style="color: #7f8c8d;">
+  Total de incidentes en pantalla: <strong>{{ ticketsMostrados.length }}</strong> <br>
+  IDs visibles en este momento: <strong>#{{ resumenIds }}</strong>
+</p>
+
+<h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">
+  Listado de Incidentes
+</h3>
+
+<table style="width: 100%; border-collapse: collapse; background-color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  <thead>
+    <tr style="background-color: #34495e; color: white; text-align: left;">
+      <th style="padding: 12px;">ID</th>
+      <th style="padding: 12px;">Solicitante</th>
+      <th style="padding: 12px;">Equipo</th>
+      <th style="padding: 12px;">Descripción</th>
+      <th style="padding: 12px;">Estado</th>
+      <th style="padding: 12px;">Fecha</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (ticket of ticketsMostrados; track ticket.id_ticket) {
+      <tr style="border-bottom: 1px solid #ddd;">
+        <td style="padding: 12px; font-weight: bold;">#{{ ticket.id_ticket }}</td>
+        <td style="padding: 12px;">{{ ticket.solicitante }}</td>
+        <td style="padding: 12px;">{{ ticket.equipoAsignado }}</td>
+        <td style="padding: 12px;">{{ ticket.descripcion }}</td>
+        
+        <td style="padding: 12px;">
+          @if (ticket.abierto) {
+            <span style="background-color: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.9em;">Abierto</span>
+            <button (click)="resolverTicket(ticket.id_ticket)" style="background-color: #f39c12; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em; font-weight: bold; margin-left: 5px;">✔ Resolver</button>
+          } @else {
+            <span style="background-color: #2ecc71; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.9em;">Resuelto</span>
+          }
+          <button (click)="eliminarTicket(ticket.id_ticket)" style="background-color: #c0392b; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em; font-weight: bold; margin-left: 5px;">
+            🗑️ Borrar
+          </button>
+          <button routerLink="/editar/{{ ticket.id_ticket }}" style="background-color: #3498db; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;  font-size: 0.8em; font-weight: bold; margin-left: 5px;">
+           ✏️  Editar
+          </button>  
+        </td>
+        <td style="padding: 12px;">{{ ticket.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}</td>
+      </tr>
+    } @empty {
+      <tr>
+        <td colspan="6" style="padding: 20px; text-align: center; color: #7f8c8d; font-style: italic;">
+          No hay incidentes para mostrar con el filtro actual.
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

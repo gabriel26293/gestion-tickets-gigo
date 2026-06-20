@@ -67,5 +67,23 @@ export class TicketService {
   eliminarTicket(id_ticket_buscado: number) {
     this.listaTickets = this.listaTickets.filter(ticket => ticket.id_ticket !== id_ticket_buscado);
   }
+
+  //busco ticket por id
+  obtenerTicketPorId(idBuscado: number) {
+    return this.listaTickets.find(ticket => ticket.id_ticket === idBuscado);
+  }
+
+  // Pasa los datos nuevos y sobrescribe los viejos
+  actualizarTicket(idBuscado: number, solicitanteNuevo: string, equipoNuevo: string, descripcionNueva: string) {
+    const ticketEncontrado = this.obtenerTicketPorId(idBuscado);
+    
+    //valido
+    if (ticketEncontrado) {
+      ticketEncontrado.solicitante = solicitanteNuevo;
+      ticketEncontrado.equipoAsignado = equipoNuevo;
+      ticketEncontrado.descripcion = descripcionNueva;
+    }
+  }
+
   
 }

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { TicketService, Ticket } from './ticket.service';
-import { DatePipe } from '@angular/common';
+import { RouterOutlet, RouterLink } from '@angular/router';
+//import { FormsModule } from '@angular/forms';
+//import { TicketService, Ticket } from './ticket.service';
+//import { DatePipe } from '@angular/common';
 
 //mudado#1 a service
 /*
@@ -15,22 +16,24 @@ interface Ticket{
 
 @Component({
   selector: 'app-root',
-  imports: [FormsModule, DatePipe],
+  imports: [RouterOutlet, RouterLink], //importamos herramientas de navegacion
+  //imports: [FormsModule, DatePipe], #Ver despues eliminar
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App { //clase principal
   
-  tituloSistema: string = 'Gigo - Gestion de Incidente';
+  //tituloSistema: string = 'Gigo - Gestion de Incidente'; >> mudado en rutas
 
   /*#mudado2 a service lista por ahora vacia
   listaTickets: Ticket[] = []; #mudado2 */
 
+/*hasta linea 43
   //auxiliares
   nuevoSolicitante: string = '';
   nuevoEquipo: string = '';
   nuevaDescripcion: string = '';
-
+  
   //uso el constructor de mi clase para aplicar la inyeccion de dependencia > Parte de la mudanza a service
   constructor(private miServicio: TicketService) {} //encapsulo
 
@@ -38,9 +41,10 @@ export class App { //clase principal
   get listaTickets(): Ticket[] {
     return this.miServicio.listaTickets;
   }
-
+  */
   //Parte de la mudanza: objeto crear > valido datos vacios y los guardo 
-  /*crearTicket (){
+  /*hastas linea 88
+    crearTicket (){
     //valido datos vacios
     if (this.nuevoSolicitante == '' || this.nuevaDescripcion == ''){
       alert ("Por favor, complete al menos el solicitante y la descripcion.");
@@ -83,6 +87,7 @@ export class App { //clase principal
     this.listaTickets = this.listaTickets.filter(ticket => ticket.id_ticket !== id_ticket_buscado);
   }*/
 
+/*hasta linea 117
   //parte de la mudanza hace esto: que la pantalla solo avisa y el servicio trabaja
   crearTicket() {
     if (this.nuevoSolicitante == '' || this.nuevaDescripcion == '') {
@@ -111,5 +116,5 @@ export class App { //clase principal
     this.miServicio.eliminarTicket(id_ticket_buscado);
   }
 
-
+*/
 }
