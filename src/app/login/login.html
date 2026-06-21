@@ -1,0 +1,17 @@
+<div style="background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 400px; margin: 100px auto; font-family: Arial, sans-serif;">
+  <h3 style="color: #2c3e50; margin-top: 0; text-align: center;">Iniciar Sesion</h3>
+  
+  <div style="margin-bottom: 15px;">
+    <label style="display: block; font-weight: bold; margin-bottom: 5px;">Usuario:</label>
+    <input type="text" [(ngModel)]="usuarioInput" placeholder="Ej: admin o user" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <label style="display: block; font-weight: bold; margin-bottom: 5px;">Contrasena:</label>
+    <input type="password" [(ngModel)]="passInput" placeholder="********" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+  </div>
+
+  <button (click)="ingresar()" style="width: 100%; background-color: #3498db; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+    Ingresar
+  </button>
+</div>

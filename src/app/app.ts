@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { RouterOutlet, RouterLink, Router } from '@angular/router';
 //import { FormsModule } from '@angular/forms';
 //import { TicketService, Ticket } from './ticket.service';
 //import { DatePipe } from '@angular/common';
@@ -23,6 +23,13 @@ interface Ticket{
 })
 export class App { //clase principal
   
+  constructor(public enrutador: Router) {} //por ahora el enrutador lo dejamos public
+
+    cerrarSesion() {
+    localStorage.removeItem('sesion_usuario'); //borramos credenciales
+    this.enrutador.navigate(['/login']); //mandamos al login
+  }
+
   //tituloSistema: string = 'Gigo - Gestion de Incidente'; >> mudado en rutas
 
   /*#mudado2 a service lista por ahora vacia

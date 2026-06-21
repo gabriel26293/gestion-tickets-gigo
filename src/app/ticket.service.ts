@@ -28,7 +28,14 @@ export class TicketService {
   contadorId: number;
 
   // usamos el constructor para darle el valor inicial usando if/else y controlar los id de la lista
-  constructor() {    
+  constructor() {
+    
+    const ticketsGuardados = localStorage.getItem('tickets_gigo');//obtengo los tickets
+
+    if (ticketsGuardados !== null) {
+      this.listaTickets = JSON.parse(ticketsGuardados);//si los hay por ahora los transformamos a texto asi despues vemos...
+    }
+
      if (this.listaTickets.length > 0) {
       
       const todosLosIds = this.listaTickets.map(ticket => ticket.id_ticket);      
@@ -55,6 +62,7 @@ export class TicketService {
     
     this.listaTickets.push(nuevoIncidente);
     this.contadorId++;
+    this.guardarEnStorage();
   }
 
   resolverTicket(idBuscado: number) {
@@ -62,10 +70,12 @@ export class TicketService {
     if (ticketEncontrado) {
       ticketEncontrado.abierto = false;
     }
+    this.guardarEnStorage();
   }
 
   eliminarTicket(id_ticket_buscado: number) {
     this.listaTickets = this.listaTickets.filter(ticket => ticket.id_ticket !== id_ticket_buscado);
+    this.guardarEnStorage();
   }
 
   //busco ticket por id
@@ -83,6 +93,12 @@ export class TicketService {
       ticketEncontrado.equipoAsignado = equipoNuevo;
       ticketEncontrado.descripcion = descripcionNueva;
     }
+    this.guardarEnStorage();
+  }
+
+  private guardarEnStorage() {
+    // recordatorio: setItem > setter / getItem > getter 
+    localStorage.setItem('tickets_gigo', JSON.stringify(this.listaTickets));//JSON.stringify para convertir array (datos) a texto
   }
 
   

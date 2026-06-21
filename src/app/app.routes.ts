@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
 import { Formulario } from './formulario/formulario';
 import { ListaTicket } from './lista-ticket/lista-ticket';
+import { LoginComponent } from './login/login';
 
 export const rutas: Routes = [
   
+  { path: 'login', component: LoginComponent },
   { path: 'incidentes', component: ListaTicket},  
   { path: 'nuevo', component: Formulario},
   { path: 'editar/:id', component: Formulario },
