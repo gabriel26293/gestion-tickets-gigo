@@ -10,15 +10,21 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './formulario.html'
 })
 export class Formulario implements OnInit {
+
+  usuarioActual: string = ''; //para guardar el nombre logeado
   /*nuevoSolicitante: string = '';
   nuevoEquipo: string = '';
   nuevaDescripcion: string = '';*/
 
   //por ahora nuestro objeto lo llamamos ticketFormulario, despues vemos si hacemos cambios para escalarlo o lo consultamos con el profe
   ticketFormulario = new FormGroup({
-    solicitante: new FormControl('', Validators.required),//obligatprio
-    equipo: new FormControl(''),//opcional
-    descripcion: new FormControl('', [Validators.required, Validators.minLength(10)])//otro obligatorio min 10 caractes por ahira
+    titulo: new FormControl('', Validators.required),
+    descripcion: new FormControl('', [Validators.required, Validators.minLength(10)]),//otro obligatorio min 10 caractes por ahira
+    tipo: new FormControl('Incidente', Validators.required),
+    asignacion: new FormControl('Soporte Tecnico', Validators.required),
+    categoria: new FormControl('Pc-Escritorio', Validators.required)
+    //equipo: new FormControl(''),//opcional
+    
   });
 
   //Si es mayor a 0 editamos. Si es 0 creamos
@@ -32,6 +38,11 @@ export class Formulario implements OnInit {
     
   ngOnInit() {// Este metodo se ejecuta automaticamente un milisegundo despues de abrir la pantalla
     
+    const sesion = localStorage.getItem('sesion_usuario');
+    if (sesion !== null) { //buscamos el usuario para colocarlo en el label, con mysql esto ya ni llo usariamos
+      this.usuarioActual = JSON.parse(sesion).username;
+    }
+
     const idEnLaUrl = this.rutaActiva.snapshot.paramMap.get('id');// Leem la barra de direcciones buscando  "id"
 
     if (idEnLaUrl !== null) {
@@ -42,9 +53,11 @@ export class Formulario implements OnInit {
 
       if (ticketAEditar !== undefined) { //si pasa el control autocompleta con react ;)
         this.ticketFormulario.setValue({
-          solicitante: ticketAEditar.solicitante,
-          equipo: ticketAEditar.equipoAsignado,
-          descripcion: ticketAEditar.descripcion
+          titulo: ticketAEditar.titulo,
+          descripcion: ticketAEditar.descripcion,
+          tipo: ticketAEditar.tipo,
+          asignacion: ticketAEditar.asignacion,
+          categoria: ticketAEditar.categoria
         });
       }
     }
@@ -61,17 +74,22 @@ export class Formulario implements OnInit {
     if (this.idEdicion > 0) {//edicion
       this.miServicio.actualizarTicket(
         this.idEdicion,
-        datos.solicitante || '', //podria haber usado > datos.solicitante!,
-        datos.equipo || 'Sin equipo',
-        datos.descripcion || ''
+        datos.titulo || '',  //pudimos usasr datos.titulo!
+        datos.descripcion || '',
+        datos.tipo || '',
+        datos.asignacion || '',
+        datos.categoria || ''
       );
       alert("¡Ticket actualizado con exito!");
 
     } else {//creacion
       this.miServicio.agregarTicket(
-        datos.solicitante || '', 
-        datos.equipo || 'Sin equipo',
-        datos.descripcion || ''
+        this.usuarioActual,
+        datos.titulo || '', 
+        datos.descripcion || '',
+        datos.tipo || '',
+        datos.asignacion || '',
+        datos.categoria || ''
       );
       alert("¡Ticket creado con exito!");
     }

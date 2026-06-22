@@ -3,8 +3,11 @@ import { Injectable } from '@angular/core';
 export interface Ticket{
   id_ticket: number;
   solicitante: string;
+  titulo: string;
   descripcion: string;
-  equipoAsignado: string;
+  tipo: string;
+  asignacion: string;
+  categoria: string;
   abierto: boolean;
   fechaCreacion: Date;
 }
@@ -14,6 +17,9 @@ export interface Ticket{
 })
 export class TicketService {
 
+  listaTickets: Ticket[] = [];
+  contadorId: number;
+/*hardcodeo 
   listaTickets: Ticket[] = [
     {
     id_ticket: 1,
@@ -24,8 +30,8 @@ export class TicketService {
     fechaCreacion: new Date ('2026-06-04T18:35:25'),
     }
   ];
+  */
   
-  contadorId: number;
 
   // usamos el constructor para darle el valor inicial usando if/else y controlar los id de la lista
   constructor() {
@@ -50,12 +56,15 @@ export class TicketService {
   }
 
   //al mudar la creacion a service no puedo leer pantalla entonces paso datos por parametros  
-  agregarTicket(solicitanteIngresado: string, equipoIngresado: string, descripcionIngresada: string) {
+  agregarTicket(solicitanteIngresado: string, tituloIngresado: string, descripcionIngresada: string, tipoIngresado: string, asignacionIngresada: string, categoriaIngresada: string) {
     const nuevoIncidente: Ticket = {
       id_ticket: this.contadorId,
       solicitante: solicitanteIngresado,
-      equipoAsignado: equipoIngresado,
+      titulo: tituloIngresado,
       descripcion: descripcionIngresada,
+      tipo: tipoIngresado,
+      asignacion: asignacionIngresada,
+      categoria: categoriaIngresada,
       abierto: true,
       fechaCreacion: new Date(),
     };
@@ -84,14 +93,16 @@ export class TicketService {
   }
 
   // Pasa los datos nuevos y sobrescribe los viejos
-  actualizarTicket(idBuscado: number, solicitanteNuevo: string, equipoNuevo: string, descripcionNueva: string) {
+  actualizarTicket(idBuscado: number, tituloNuevo: string, descripcionNueva: string, tipoNuevo: string, asignacionNueva: string, categoriaNueva: string) {
     const ticketEncontrado = this.obtenerTicketPorId(idBuscado);
     
     //valido
     if (ticketEncontrado) {
-      ticketEncontrado.solicitante = solicitanteNuevo;
-      ticketEncontrado.equipoAsignado = equipoNuevo;
+      ticketEncontrado.titulo = tituloNuevo;
       ticketEncontrado.descripcion = descripcionNueva;
+      ticketEncontrado.tipo = tipoNuevo;
+      ticketEncontrado.asignacion = asignacionNueva;
+      ticketEncontrado.categoria = categoriaNueva;
     }
     this.guardarEnStorage();
   }

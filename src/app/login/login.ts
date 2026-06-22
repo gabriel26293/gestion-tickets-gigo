@@ -25,6 +25,33 @@ export class LoginComponent {
       return;
     }
 
+    let usuarioEncontrado: Usuario | null = null; // por ahora nulo
+
+    // Damos de alta los usuarios mas adelante lo hacemos com el xamp y mysql
+    if (this.usuarioInput === 'admin' && this.passInput === 'admin123') {
+      usuarioEncontrado = { username: 'admin', role: 'admin' };
+    } else if (this.usuarioInput === 'ggomez' && this.passInput === '1234') {
+      usuarioEncontrado = { username: 'ggomez', role: 'user' };
+    } else if (this.usuarioInput === 'tgianella' && this.passInput === '1234') {
+      usuarioEncontrado = { username: 'tgianella', role: 'user' };
+    }
+    
+    if (usuarioEncontrado !== null) { // si existe guardo
+      localStorage.setItem('sesion_usuario', JSON.stringify(usuarioEncontrado));      
+      this.enrutador.navigate(['/incidentes']);
+    } else {
+      alert('Credenciales incorrectas.'); 
+    }
+  }
+
+
+  /*
+  ingresar() {
+    if (this.usuarioInput === '' || this.passInput === '') {
+      alert('Por favor complete todos los campos.');
+      return;
+    }
+
     let usuarioEncontrado: Usuario | null = null;//por ahora nulo, lo dejamos asi
 
     // hardcodeamos
@@ -42,4 +69,6 @@ export class LoginComponent {
       alert('Credenciales incorrectas. Pruebe admin/admin123 o user/user123');//lo dejamos por ahora
     }
   }
+  */
+
 }

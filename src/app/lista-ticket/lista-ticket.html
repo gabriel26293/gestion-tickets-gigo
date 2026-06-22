@@ -28,9 +28,8 @@
     <tr style="background-color: #34495e; color: white; text-align: left;">
       <th style="padding: 12px;">ID</th>
       <th style="padding: 12px;">Solicitante</th>
-      <th style="padding: 12px;">Hardware / Software</th>
-      <th style="padding: 12px;">Descripción</th>
-      <th style="padding: 12px;">Estado</th>
+      <th style="padding: 12px;">Título</th> <th style="padding: 12px;">Tipo</th> <th style="padding: 12px;">Asignación</th> <th style="padding: 12px;">Categoría</th> <th style="padding: 12px;">Estado</th>
+      <th style="padding: 12px;">Acciones</th>
       <th style="padding: 12px;">Fecha</th>
     </tr>
   </thead>
@@ -39,28 +38,38 @@
       <tr style="border-bottom: 1px solid #ddd;">
         <td style="padding: 12px; font-weight: bold;">#{{ ticket.id_ticket }}</td>
         <td style="padding: 12px;">{{ ticket.solicitante }}</td>
-        <td style="padding: 12px;">{{ ticket.equipoAsignado }}</td>
-        <td style="padding: 12px;">{{ ticket.descripcion }}</td>
+        <td style="padding: 12px;">{{ ticket.titulo }}</td>
+        <td style="padding: 12px;">{{ ticket.tipo }}</td>
+        <td style="padding: 12px;">{{ ticket.asignacion }}</td>
+        <td style="padding: 12px;">{{ ticket.categoria }}</td>
         
         <td style="padding: 12px;">
           @if (ticket.abierto) {
             <span style="background-color: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.9em;">Abierto</span>
-            <button (click)="resolverTicket(ticket.id_ticket)" style="background-color: #f39c12; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em; font-weight: bold; margin-left: 5px;">✔ Resolver</button>
           } @else {
             <span style="background-color: #2ecc71; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.9em;">Resuelto</span>
           }
-          <button (click)="eliminarTicket(ticket.id_ticket)" style="background-color: #c0392b; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em; font-weight: bold; margin-left: 5px;">
+        </td>
+
+        <td style="padding: 12px;">
+          @if (ticket.abierto) {
+            <button (click)="resolverTicket(ticket.id_ticket)" style="background-color: #f39c12; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em; font-weight: bold; margin-right: 5px;">✔ Resolver</button>
+          }
+          
+          <button (click)="eliminarTicket(ticket.id_ticket)" style="background-color: #c0392b; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em; font-weight: bold; margin-right: 5px;">
             🗑️ Borrar
           </button>
-          <button routerLink="/editar/{{ ticket.id_ticket }}" style="background-color: #3498db; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;  font-size: 0.8em; font-weight: bold; margin-left: 5px;">
-           ✏️  Editar
+          
+          <button routerLink="/editar/{{ ticket.id_ticket }}" style="background-color: #3498db; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;  font-size: 0.8em; font-weight: bold;">
+           ✏️ Editar
           </button>  
         </td>
+        
         <td style="padding: 12px;">{{ ticket.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}</td>
       </tr>
     } @empty {
       <tr>
-        <td colspan="6" style="padding: 20px; text-align: center; color: #7f8c8d; font-style: italic;">
+        <td colspan="7" style="padding: 20px; text-align: center; color: #7f8c8d; font-style: italic;">
           No hay incidentes para mostrar con el filtro actual.
         </td>
       </tr>
