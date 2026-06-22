@@ -11,5 +11,5 @@ export const rutas: Routes = [
   { path: 'editar/:id', component: Formulario },
   
   // Ruta por defecto: si entra vacio lo redirigimos a los incidentes, luego veo si lo cambio
-  { path: '', redirectTo: '/incidentes', pathMatch: 'full' } 
+  { path: '', redirectTo: '/login', pathMatch: 'full' } 
 ];

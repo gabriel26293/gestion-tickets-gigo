@@ -128,6 +128,10 @@ export class Formulario implements OnInit {
     }
   }
 
+  cancelar() {//cancelar accion por ahora al editar, uso enrutador ara volver a incidentes sin guardar
+     this.enrutador.navigate(['/incidentes']);
+  }
+
   /*bloque viejo hasta linea 60, usabamos variables auxiliares
   crearTicket() {
     if (this.nuevoSolicitante == '' || this.nuevaDescripcion == '') {

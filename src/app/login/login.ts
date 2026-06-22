@@ -38,7 +38,7 @@ export class LoginComponent {
     
     if (usuarioEncontrado !== null) { // si existe guardo
       localStorage.setItem('sesion_usuario', JSON.stringify(usuarioEncontrado));      
-      this.enrutador.navigate(['/incidentes']);
+      this.enrutador.navigate(['/incidentes']);//nos manda a incidentes
     } else {
       alert('Credenciales incorrectas.'); 
     }
