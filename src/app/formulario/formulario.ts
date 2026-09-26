@@ -36,7 +36,7 @@ export class Formulario implements OnInit {
     private enrutador: Router           // manda al usuario de vuelta a la tabla
   ) {}
     
-  ngOnInit() {// Este metodo se ejecuta automaticamente un milisegundo despues de abrir la pantalla
+  ngOnInit() {// EDITAR - Este metodo se ejecuta automaticamente un milisegundo despues de abrir la pantalla
     
     const sesion = localStorage.getItem('sesion_usuario');
     if (sesion !== null) { //buscamos el usuario para colocarlo en el label, con mysql esto ya ni llo usariamos
