@@ -22,10 +22,10 @@ export const appConfig: ApplicationConfig = {
       messagingSenderId: "322874812094",
       appId: "1:322874812094:web:defb9b57f088d4d1d4e0ef"
     })),
-    // Enciendo el modulo de autenticacion (Login)
+    // Arranco el modulo de autenticacion (Login) luego lo uso en autenticacion.ts
     provideAuth(() => getAuth()),
 
-    // Enciendo la BD (Para el foro y los tickets mas adelante vere....)
+    // arranco la BD (Para el foro y los tickets mas adelante vere....)
     provideFirestore(() => getFirestore())
   ]
 };
