@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AutenticacionService } from '../../autenticacion.service'; //importo para validar con firebase
 
 export interface Usuario {
   username: string;
@@ -17,13 +18,38 @@ export class LoginComponent {
   usuarioInput: string = '';
   passInput: string = '';
 
-  constructor(private enrutador: Router) {}
+  //constructor(private enrutador: Router) {}
+
+  // Inyecto servicio (el "horno") junto con el enrutador
+  constructor(
+    private enrutador: Router,
+    private servicioAuth: AutenticacionService 
+  ) {}
 
   ingresar() {
     if (this.usuarioInput === '' || this.passInput === '') {
       alert('Por favor complete todos los campos.');
       return;
     }
+    //DIR#1
+    // Ya no harcodeo ni valido usuario con if, el login se convirtio en mensajero. Le mando los datos a firebase y que se arrelge.
+    //uso this y then
+    this.servicioAuth.ingresarConFirebase(this.usuarioInput, this.passInput)
+      .then((respuestaDeFirebase) => { // Uso .then() para decir "CUANDO Firebase responda con exito.... que haga esto:...."
+        // Si entro, es porque Firebase valido el usuario y la clave correctamente
+        // OJO: Por ahora dejo un usuario temporal hardcodeado SOLO para el LocalStorage. Mas adelante traigo el rol real desde firebase
+        
+        const usuarioTemporal: Usuario = { username: this.usuarioInput, role: 'admin' };
+        localStorage.setItem('sesion_usuario', JSON.stringify(usuarioTemporal));      
+                
+        this.enrutador.navigate(['/incidentes']);// grilla de incidentes
+      })
+      .catch((errorDeFirebase) => {
+        // uso ".catch()" para atrapr cualquier error (ej. pass erronea, usuario invalido)
+        alert('Credenciales incorrectas o usuario inexistente.'); 
+      });
+
+    /*codigo viejo validaba usuario harcodeado
 
     let usuarioEncontrado: Usuario | null = null; // por ahora nulo
 
@@ -41,7 +67,7 @@ export class LoginComponent {
       this.enrutador.navigate(['/incidentes']);//nos manda a incidentes
     } else {
       alert('Credenciales incorrectas.'); 
-    }
+    }*/
   }
 
 
