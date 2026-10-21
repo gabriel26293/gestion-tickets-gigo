@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
+import { AutenticacionService } from '.././autenticacion.service'; // importo servicio
 //import { FormsModule } from '@angular/forms';
 //import { TicketService, Ticket } from './ticket.service';
 //import { DatePipe } from '@angular/common';
@@ -23,12 +24,26 @@ interface Ticket{
 })
 export class App { //clase principal
   
-  constructor(public enrutador: Router) {} //por ahora el enrutador lo dejamos public
+  // DIR#3: Inyecto0 el servicio de autenticacion ademas del enrutador
+  constructor(public enrutador: Router, private servicioAuth: AutenticacionService) {} //por ahora el enrutador lo dejamos public
 
+  //DIR3-funcion
+  // Modificamos la función para que le avise a Firebase primero
+  cerrarSesion() {    
+    this.servicioAuth.cerrarSesionDeFirebase()// Le pedo a firebase que destruya la sesion en la nubee
+      .then(() => { // Usamos .then() para: "Cuando termines de apagar todo, recien ahi borra el navegador"
+        localStorage.removeItem('sesion_usuario'); // Borramos credenciales locales
+        this.enrutador.navigate(['/login']); // Mandamos al login
+      })
+      .catch((error) => {
+        console.error("Hubo un error cerrando sesión en Firebase:", error);
+      });
+  }
+  /*//vieja funcion mejorada en #DIR3-funcion
     cerrarSesion() {
     localStorage.removeItem('sesion_usuario'); //borramos credenciales
     this.enrutador.navigate(['/login']); //mandamos al login
-  }
+  }*/
 
   //tituloSistema: string = 'Gigo - Gestion de Incidente'; >> mudado en rutas
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { Auth, signInWithEmailAndPassword, signOut } from '@angular/fire/auth'; //#Dir3 Cierre de sesion es parecido al guardian que usaba en php
 import { Firestore, doc, getDoc } from '@angular/fire/firestore'; // herramienta de la base de datos (Firestore)
 
 @Injectable({
@@ -27,6 +27,11 @@ export class AutenticacionService {
     } else {
       return 'user'; // por default si el usuario no tiene rol guardado, es 'user' por segguridad
     }
+  }
+
+  //#Dir3 Funcion para cerrar la sesion en los servidores de google
+  cerrarSesionDeFirebase() {
+    return signOut(this.authFirebase);
   }
 
 }
