@@ -35,13 +35,24 @@ export class LoginComponent {
     // Ya no harcodeo ni valido usuario con if, el login se convirtio en mensajero. Le mando los datos a firebase y que se arrelge.
     //uso this y then
     this.servicioAuth.ingresarConFirebase(this.usuarioInput, this.passInput)
-      .then((respuestaDeFirebase) => { // Uso .then() para decir "CUANDO Firebase responda con exito.... que haga esto:...."
-        // Si entro, es porque Firebase valido el usuario y la clave correctamente
+      .then(async (respuestaDeFirebase) => { // Uso .then() para decir "CUANDO Firebase responda con exito.... que haga esto:...."
+        // Si entro, es porque Firebase valido el usuario y la clave 
         // OJO: Por ahora dejo un usuario temporal hardcodeado SOLO para el LocalStorage. Mas adelante traigo el rol real desde firebase
         
+        const uid = respuestaDeFirebase.user.uid; //guardo en uid. me devuelve el paquete junto con el id dentro de "respuestaDeFirebase" viene el UID del usuario
+        /*hardcodeo viejo
         const usuarioTemporal: Usuario = { username: this.usuarioInput, role: 'admin' };
         localStorage.setItem('sesion_usuario', JSON.stringify(usuarioTemporal));      
-                
+        */
+       // DIR#2
+        const rolReal = await this.servicioAuth.obtenerRolDeBaseDeDatos(uid); // ya entro, lo freno un segundo (await) y mandao a buscar su rol real a firestore       
+        const usuarioReal: Usuario = { // guardo usuario real con su rol posta 
+          username: this.usuarioInput, 
+          role: rolReal as 'admin' | 'user' //fuerzo con as el tipado para que typescript no rompa porque en la linea 6 defino una interfaz con tipo de datosstring
+        };
+
+        localStorage.setItem('sesion_usuario', JSON.stringify(usuarioReal));
+        
         this.enrutador.navigate(['/incidentes']);// grilla de incidentes
       })
       .catch((errorDeFirebase) => {
