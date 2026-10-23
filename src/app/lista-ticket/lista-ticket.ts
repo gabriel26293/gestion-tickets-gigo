@@ -4,6 +4,7 @@ import { TicketService } from '../ticket.service';
 import { Ticket } from '../ticket.model';//#DIR6 Mudado a ticke.model.ts
 import { RouterLink } from '@angular/router';
 import { FiltroTicketsPipe } from '../pipes/filtro-tickets-pipe'; //#DIR7 pedido del profe nuevo pipe
+import {  signal } from '@angular/core';//DIR8 Uso de signals (Parte C)
 
 @Component({
   selector: 'app-lista-ticket',
@@ -13,7 +14,8 @@ import { FiltroTicketsPipe } from '../pipes/filtro-tickets-pipe'; //#DIR7 pedido
 })
 export class ListaTicket implements OnInit {
 
-  filtroActual: string = 'todos'; 
+  filtroActual: string = 'todos';
+  cantidadVisible = signal(0);//#DIR8 Uso de signals (Parte C)
 
   //para la seguridad
   usuarioLogueado: string = '';
@@ -45,6 +47,7 @@ export class ListaTicket implements OnInit {
     if (this.rolLogueado === 'user') {// (Si es admin pasamos de largo el if mantiene lista entera)
       listaPermitida = listaPermitida.filter(ticket => ticket.solicitante === this.usuarioLogueado);
     }    
+    //this.cantidadVisible.set(listaPermitida.length);// #DIR8 seteamos al signal la cantidad de tickets que quedaron (pedido del profe)  
     /*#DIR71b codigo viejo
     //  filtro botones (Abierto/Cerrado) sobre la lista ya asegurada
     if (this.filtroActual === 'abiertos') {

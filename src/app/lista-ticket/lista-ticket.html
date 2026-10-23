@@ -15,7 +15,8 @@
 </div>
 
 <p style="color: #7f8c8d;">
-  Total de incidentes en pantalla: <strong>{{ ticketsMostrados.length }}</strong> <br>
+  <!--Total de incidentes en pantalla: <strong>{{ ticketsMostrados.length }}</strong> <br> --><!--#DIR8 quedo viejo, ahora uso signal a pedido del profe en la siguiente linea-->
+  Total de incidentes en pantalla: <strong>{{ cantidadVisible() }}</strong> <br>
   <!--IDs visibles en este momento: <strong>#{{ resumenIds }}</strong>-->
 </p>
 
@@ -39,7 +40,7 @@
   </thead>
   <tbody>
     <!--@for (ticket of ticketsMostrados; track ticket.id_ticket) {-->
-    @for (ticket of ticketsMostrados | filtroTickets: filtroActual; track ticket.id_ticket) {  
+    @for (ticket of ticketsMostrados | filtroTickets: filtroActual: cantidadVisible; track ticket.id_ticket) {<!--el HTML le pasa el Signal como un tubo extra al Pipe para que el lo actualice-->
       <tr style="border-bottom: 1px solid #ddd;">
         <td style="padding: 12px; font-weight: bold;">#{{ ticket.id_ticket }}</td>
         <td style="padding: 12px;">{{ ticket.solicitante }}</td>
