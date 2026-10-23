@@ -38,7 +38,8 @@
     </tr>
   </thead>
   <tbody>
-    @for (ticket of ticketsMostrados; track ticket.id_ticket) {
+    <!--@for (ticket of ticketsMostrados; track ticket.id_ticket) {-->
+    @for (ticket of ticketsMostrados | filtroTickets: filtroActual; track ticket.id_ticket) {  
       <tr style="border-bottom: 1px solid #ddd;">
         <td style="padding: 12px; font-weight: bold;">#{{ ticket.id_ticket }}</td>
         <td style="padding: 12px;">{{ ticket.solicitante }}</td>

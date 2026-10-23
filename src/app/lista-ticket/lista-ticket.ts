@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core'; //por ahora para administrar la pantalla de admin y user usamos oninit en lista-ticket linea 12
 import { DatePipe } from '@angular/common';
-import { TicketService, Ticket } from '../ticket.service';
+import { TicketService } from '../ticket.service';
+import { Ticket } from '../ticket.model';//#DIR6 Mudado a ticke.model.ts
 import { RouterLink } from '@angular/router';
+import { FiltroTicketsPipe } from '../pipes/filtro-tickets-pipe'; //#DIR7 pedido del profe nuevo pipe
 
 @Component({
   selector: 'app-lista-ticket',
   standalone: true,
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, FiltroTicketsPipe],//#DIR7 forma parte del pedido
   templateUrl: './lista-ticket.html'
 })
 export class ListaTicket implements OnInit {
@@ -34,23 +36,24 @@ export class ListaTicket implements OnInit {
     return this.miServicio.listaTickets;
   }
 
-  // seguridad roles
-  get ticketsMostrados(): Ticket[] {
+  // seguridad roles. Basado en if / else para filtrar los tickets (todos, abiertos, resueltos) por ahora
+  //Mas adelante en #DIR7 usamos friltro-tickets en pipes a pedido del profe entonces los filtros lo sacamos > (Linea #DIR71b)
+  get ticketsMostrados(): Ticket[] { //ahora solo lo encargo de la seguridad, no importa si estan abiertos o cerrados, de eso lo encargo al HTML con el Pipe
         
     let listaPermitida = this.listaTickets;// filtro por rol de seguridad
 
     if (this.rolLogueado === 'user') {// (Si es admin pasamos de largo el if mantiene lista entera)
       listaPermitida = listaPermitida.filter(ticket => ticket.solicitante === this.usuarioLogueado);
     }    
-
+    /*#DIR71b codigo viejo
     //  filtro botones (Abierto/Cerrado) sobre la lista ya asegurada
     if (this.filtroActual === 'abiertos') {
       return listaPermitida.filter(ticket => ticket.abierto === true);
     } else if (this.filtroActual === 'resueltos') {
       return listaPermitida.filter(ticket => ticket.abierto === false);
-    } else {
+    } else { */
       return listaPermitida; 
-    }
+    //}
   }
 
 /*

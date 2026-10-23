@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Ticket } from './ticket.model'; //el molde que migre
 
+/*#DIR6Mudado a ticket.model.ts a pedido del profe
 export interface Ticket{
   id_ticket: number;
   solicitante: string;
@@ -10,7 +12,7 @@ export interface Ticket{
   categoria: string;
   abierto: boolean;
   fechaCreacion: Date;
-}
+}*/
 
 @Injectable({
   providedIn: 'root',
