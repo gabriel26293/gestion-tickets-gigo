@@ -21,7 +21,7 @@ export interface Ticket{
 export class TicketService {
 
 
-  listaTickets: Ticket[] = [];
+  listaTickets: Ticket[] = []; 
   //contadorId: number; //#DIR9 ahora paso a armarlo con firestone
   
   constructor(private firestore: Firestore) {// #DIR9 inyecto la bd de Firebase    
@@ -126,8 +126,9 @@ export class TicketService {
     const coleccion = collection(this.firestore, 'tickets'); // Apunta a la carpeta "tickets"
     const respuesta = await getDocs(coleccion);
     
-    this.listaTickets = []; // vacio la memoria temporal
-    
+    //this.listaTickets = []; // vacio la memoria temporal (esta mal). #DIR9 ERROR- Lo mude porque sino mostraba 0 tickets, lo mejore en la siguiente linea
+    const ticketsTemporales: Ticket[] =[];//#DIR9 mejora de this.listaTickets = []; . Mostraba 0 tickest
+
     respuesta.forEach((documento) => {
       const ticketTemporal = documento.data() as Ticket;
       ticketTemporal.id_ticket = documento.id; // Le metemos el ID raro que genera Firebase
@@ -135,8 +136,9 @@ export class TicketService {
       if (documento.data()['fechaCreacion']) {// Convertimos la fecha de firebase a una fecha normal de javascript
          ticketTemporal.fechaCreacion = documento.data()['fechaCreacion'].toDate();
       }
-      this.listaTickets.push(ticketTemporal);
+      ticketsTemporales.push(ticketTemporal);//Lleno en array temporal
     });
+    this.listaTickets = ticketsTemporales;//lo asigno directo y el pipe conecta el cambio al toque y dibuja tabla
   }
 
   // DIR#9B (referencia al doc): CREAR (POST)
