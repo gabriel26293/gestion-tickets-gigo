@@ -10,4 +10,5 @@ export interface Ticket{
   categoria: string;
   abierto: boolean;
   fechaCreacion: Date;
+  imagenUrl?: string //#DIR11 para adjuntar img, lo linkeo a #DIR12 del "formulario.html" <input type="file" (change)="seleccionarImagen($event)">
 }

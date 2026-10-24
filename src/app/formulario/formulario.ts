@@ -29,7 +29,8 @@ export class Formulario implements OnInit {
   /* CODIGO VIEJO #DIR9 Migracion a firestone me exige cambiar id_ticket a string y ya no es number
   //Si es mayor a 0 editamos. Si es 0 creamos
   idEdicion: number = 0;*/
-  idEdicion: string = ''; //#DIR9 ahora es string, antes number 
+  idEdicion: string = ''; //#DIR9 ahora es string, antes number
+  archivoSeleccionado: File | null = null; //#DIR12 variable para guardar temporalmente el archivo img del usuario 
 
   constructor(
     private miServicio: TicketService,
@@ -78,7 +79,7 @@ export class Formulario implements OnInit {
     if (this.idEdicion !== '') { // edicion
       this.miServicio.actualizarTicket(
         this.idEdicion,
-        datos.titulo || '',  //pudimos usasr datos.titulo!
+        datos.titulo || '',  //pudimos usasr datos.titulo! no me gusto
         datos.descripcion || '',
         datos.tipo || '',
         datos.asignacion || '',
@@ -93,7 +94,8 @@ export class Formulario implements OnInit {
         datos.descripcion || '',
         datos.tipo || '',
         datos.asignacion || '',
-        datos.categoria || ''
+        datos.categoria || '',
+        this.archivoSeleccionado //#DIR 12 y #DIR13 para adjuntar img y subirlo a la bd
       );
       alert("¡Ticket creado con exito!");
     }
@@ -129,6 +131,17 @@ export class Formulario implements OnInit {
       return '#bdc3c7'; // Grissdo 
     } else {
       return '#27ae60'; // Verde habilitado
+    }
+  }
+
+  
+  seleccionarImagen(event: any) {// #DIR12: se ejecuta apenas el usuario elige una foto en su compu
+    const archivoFisico = event.target.files[0]; // atrapamos el primer archivo que eligio
+    
+    if (archivoFisico) {
+      this.archivoSeleccionado = archivoFisico; // Lo guardo en la variable
+    } else {
+      this.archivoSeleccionado = null; // Si cancelo la seleccion, vacio el bolsillo
     }
   }
 

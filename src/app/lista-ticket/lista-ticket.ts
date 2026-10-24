@@ -36,7 +36,8 @@ export class ListaTicket implements OnInit {
 
   //lista completa
   get listaTickets(): Ticket[] {
-    return this.miServicio.listaTickets;
+    //return this.miServicio.listaTickets; #DIR14 remplazo por la siguiente linea, solo agregue parentesis
+    return this.miServicio.listaTickets(); //#DIR14 reemplace la linea anterior para usar signal, ya que me rompia la vista de ticket apenas me logeaba
   }
 
   // seguridad roles. Basado en if / else para filtrar los tickets (todos, abiertos, resueltos) por ahora

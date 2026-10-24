@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Ticket } from './ticket.model'; //el molde que migre
 import { Firestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from '@angular/fire/firestore';// Importamos  herramientas dde Firestore
+import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage'; //#DIR13 herramientas de AngularFire para Storage (subir a la nube)
+import { signal } from '@angular/core'; // #DIR14 solucion al refresh del html, cada vez que me logeo no veo los tickets, el signal nos va a ayudar
 
 /*#DIR6Mudado a ticket.model.ts a pedido del profe
 export interface Ticket{
@@ -21,10 +23,12 @@ export interface Ticket{
 export class TicketService {
 
 
-  listaTickets: Ticket[] = []; 
+  //listaTickets: Ticket[] = [];  #DIR14 nos conviene borrar esto para sumar el signal y darle solucion al refresh luego de hacer login para ver los tickets
+   
+  listaTickets = signal<Ticket[]>([]); //#DIR14 AHORA ES UN SIGNAL REACTIVO
   //contadorId: number; //#DIR9 ahora paso a armarlo con firestone
   
-  constructor(private firestore: Firestore) {// #DIR9 inyecto la bd de Firebase    
+  constructor(private firestore: Firestore, private storage: Storage) {// #DIR9 inyecto la bd de Firebase   #DIR13 agrego Srtorage para subir a la nube la img 
     this.obtenerTicketsDeFirestore();// Al arrancar, buscamos los tickets reales en la nube
   }
 
@@ -138,10 +142,12 @@ export class TicketService {
       }
       ticketsTemporales.push(ticketTemporal);//Lleno en array temporal
     });
-    this.listaTickets = ticketsTemporales;//lo asigno directo y el pipe conecta el cambio al toque y dibuja tabla
+    //this.listaTickets = ticketsTemporales;//#DIR9 lo asigno directo y el pipe conecta el cambio al toque y dibuja tabla.  #DIR14 nos dio dolor de cabeza tuve que optar por signal, siguiente linea de codigo
+    this.listaTickets.set(ticketsTemporales); //#DIR14 mejora con signal para refrescar lista de tickets
   }
 
-  // DIR#9B (referencia al doc): CREAR (POST)
+  // DIR#9B (referencia al doc): CREAR (POST) - #DIR13:  
+  /*CODIGO VIEJO REEMPLAZADO POR #DIR13 SUBIR IMAGEN 
   async agregarTicket(solicitanteIngresado: string, tituloIngresado: string, descripcionIngresada: string, tipoIngresado: string, asignacionIngresada: string, categoriaIngresada: string) {
     const nuevoIncidente = {
       solicitante: solicitanteIngresado,
@@ -158,10 +164,41 @@ export class TicketService {
     await addDoc(coleccion, nuevoIncidente); // Lo sube a la bd
     
     this.obtenerTicketsDeFirestore(); // Refrescamos la grilla pidiendo los datos actualizados
-  }
+  }*/
+  async agregarTicket(solicitanteIngresado: string, tituloIngresado: string, descripcionIngresada: string, tipoIngresado: string, asignacionIngresada: string, categoriaIngresada: string, archivo: File | null) { //#DIR13 agregue archivo: FILE | null para manejar img
+      
+      let urlDeImagen = '';
+      
+      if (archivo !== null) {// Si el usuario adjuntO una foto...
+        
+        const rutaAlmacenamiento = ref(this.storage, `tickets/${archivo.name}`);// Apunto a la carpeta 'tickets' en Storage
+        
+        await uploadBytes(rutaAlmacenamiento, archivo);// subo el archivo
+        
+        urlDeImagen = await getDownloadURL(rutaAlmacenamiento);// }Pido la url publica
+      }
+
+      const nuevoIncidente = {
+        solicitante: solicitanteIngresado,
+        titulo: tituloIngresado,
+        descripcion: descripcionIngresada,
+        tipo: tipoIngresado,
+        asignacion: asignacionIngresada,
+        categoria: categoriaIngresada,
+        abierto: true,
+        fechaCreacion: new Date(),// Firebase lo convierte automatico
+        imagenUrl: urlDeImagen // GuardO la URL en el ticket
+      };
+      
+      const coleccion = collection(this.firestore, 'tickets');
+      await addDoc(coleccion, nuevoIncidente); // Lo sube a la bd
+      
+      this.obtenerTicketsDeFirestore(); // Refrescamos la grilla pidiendo los datos actualizados
+    }
   
   obtenerTicketPorId(idBuscado: string) {// Buscar uno solo localmente (Para autocompletar el formulario al editar)
-    return this.listaTickets.find(ticket => ticket.id_ticket === idBuscado);
+    //return this.listaTickets.find(ticket => ticket.id_ticket === idBuscado); #DIR14 reemplace esta linea con la siguiente de abajo
+    return this.listaTickets().find(ticket => ticket.id_ticket === idBuscado) //#DIR mejora con signal para refrescar tickets en pantalla
   }
 
   // DIR#9C (ref doc): ACTUALIZAR (PUT)

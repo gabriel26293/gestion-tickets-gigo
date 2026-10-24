@@ -1,12 +1,11 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
-
 import { rutas } from './app.routes';
-
 //importaciones de firebase
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { getStorage, provideStorage } from '@angular/fire/storage';//#DIR13 tuvimos que importar esto porque daba error y no iniciaba el login con datos (quedba en blanco). usamos Storage pero no importamos
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,7 +24,9 @@ export const appConfig: ApplicationConfig = {
     // Arranco el modulo de autenticacion (Login) luego lo uso en autenticacion.ts
     provideAuth(() => getAuth()),
 
-    // arranco la BD (Para el foro y los tickets mas adelante vere....)
-    provideFirestore(() => getFirestore())
+    
+    provideFirestore(() => getFirestore()),// arranco la BD (Para el foro y los tickets mas adelante vere....)
+
+    provideStorage(() => getStorage()),//#DIR13 ERROR la pagina queda en blanco. Solucion: encender Firebase Storage
   ]
 };
