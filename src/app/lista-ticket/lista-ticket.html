@@ -42,7 +42,7 @@
     <!--@for (ticket of ticketsMostrados; track ticket.id_ticket) {-->
     @for (ticket of ticketsMostrados | filtroTickets: filtroActual: cantidadVisible; track ticket.id_ticket) {<!--el HTML le pasa el Signal como un tubo extra al Pipe para que el lo actualice-->
       <tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 12px; font-weight: bold;">#{{ ticket.id_ticket }}</td>
+        <td style="padding: 12px; font-weight: bold;">#{{ ticket.id_ticket | slice:0:5 | uppercase }}</td> <!--#DIR10 agregamos para parcear el id de ticket slice y uppercase-->
         <td style="padding: 12px;">{{ ticket.solicitante }}</td>
         <td style="padding: 12px;">{{ ticket.titulo }}</td>
         <td style="padding: 12px;">{{ ticket.tipo }}</td>

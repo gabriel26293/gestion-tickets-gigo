@@ -5,11 +5,12 @@ import { Ticket } from '../ticket.model';//#DIR6 Mudado a ticke.model.ts
 import { RouterLink } from '@angular/router';
 import { FiltroTicketsPipe } from '../pipes/filtro-tickets-pipe'; //#DIR7 pedido del profe nuevo pipe
 import {  signal } from '@angular/core';//DIR8 Uso de signals (Parte C)
+import { SlicePipe, UpperCasePipe} from '@angular/common'; //#DIR10 Hash Corto para mejorar la UX del usuario (sobre el id de ticket).. ya se que podiamos agregarlo arriba pero queria seguir un orden ;)
 
 @Component({
   selector: 'app-lista-ticket',
   standalone: true,
-  imports: [DatePipe, RouterLink, FiltroTicketsPipe],//#DIR7 forma parte del pedido
+  imports: [DatePipe, RouterLink, FiltroTicketsPipe, SlicePipe, UpperCasePipe],//#DIR7 forma parte del pedido FiltroTicketsPipe #DIR10 mejora UX usuario idticket SlicePipe UpperCasePipe
   templateUrl: './lista-ticket.html'
 })
 export class ListaTicket implements OnInit {
@@ -87,12 +88,21 @@ export class ListaTicket implements OnInit {
     this.filtroActual = nuevoFiltro;
   }
 
-  resolverTicket(idBuscado: number) {
+  /*#DIR9 CODIGO VIEJO ahora no es mas number, es string para migrar firestone
+  resolverTicket(idBuscado: number) { 
+  resolverTicket(idBuscado: string | undefined) {
     this.miServicio.resolverTicket(idBuscado);
+  }*/
+  resolverTicket(idBuscado: string | undefined) {
+    if(idBuscado) this.miServicio.resolverTicket(idBuscado);
   }
 
-  eliminarTicket(id_ticket_buscado: number) {
+  /*#DIR9 CODIGO VIEJO - eliminarTicket(id_ticket_buscado: number) { #DIR9 idem linea 90 metodo resolverTicket
+  eliminarTicket(id_ticket_buscado: string | undefined) {
     this.miServicio.eliminarTicket(id_ticket_buscado);
+  }*/
+  eliminarTicket(id_ticket_buscado: string | undefined) {
+    if(id_ticket_buscado) this.miServicio.eliminarTicket(id_ticket_buscado);
   }
 
 

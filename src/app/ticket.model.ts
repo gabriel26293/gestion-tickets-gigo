@@ -1,6 +1,7 @@
 // DIR#6: Separamos la interface del servicio como sugiere el profe, es cierto que queda prolijo
 export interface Ticket{
-  id_ticket: number;
+  //id_ticket: number; #DIR9 tengo que cambiar id_ticket a string para migrar a firebase
+  id_ticket: string;
   solicitante: string;
   titulo: string;
   descripcion: string;

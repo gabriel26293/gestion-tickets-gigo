@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Ticket } from './ticket.model'; //el molde que migre
+import { Firestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from '@angular/fire/firestore';// Importamos  herramientas dde Firestore
 
 /*#DIR6Mudado a ticket.model.ts a pedido del profe
 export interface Ticket{
@@ -19,8 +20,14 @@ export interface Ticket{
 })
 export class TicketService {
 
+
   listaTickets: Ticket[] = [];
-  contadorId: number;
+  //contadorId: number; //#DIR9 ahora paso a armarlo con firestone
+  
+  constructor(private firestore: Firestore) {// #DIR9 inyecto la bd de Firebase    
+    this.obtenerTicketsDeFirestore();// Al arrancar, buscamos los tickets reales en la nube
+  }
+
 /*hardcodeo 
   listaTickets: Ticket[] = [
     {
@@ -32,9 +39,9 @@ export class TicketService {
     fechaCreacion: new Date ('2026-06-04T18:35:25'),
     }
   ];
-  */
-  
+  */  
 
+/*#DIR9 CODIGO VIEJO - Cuando guardaba en storage, lo mude para usar firestone
   // usamos el constructor para darle el valor inicial usando if/else y controlar los id de la lista
   constructor() {
     
@@ -113,6 +120,71 @@ export class TicketService {
     // recordatorio: setItem > setter / getItem > getter 
     localStorage.setItem('tickets_gigo', JSON.stringify(this.listaTickets));//JSON.stringify para convertir array (datos) a texto
   }
+*/
+  // DIR#9A (referencia al doc): LEER (GET) - Traer tickets de la nube
+  async obtenerTicketsDeFirestore() {
+    const coleccion = collection(this.firestore, 'tickets'); // Apunta a la carpeta "tickets"
+    const respuesta = await getDocs(coleccion);
+    
+    this.listaTickets = []; // vacio la memoria temporal
+    
+    respuesta.forEach((documento) => {
+      const ticketTemporal = documento.data() as Ticket;
+      ticketTemporal.id_ticket = documento.id; // Le metemos el ID raro que genera Firebase
+      
+      if (documento.data()['fechaCreacion']) {// Convertimos la fecha de firebase a una fecha normal de javascript
+         ticketTemporal.fechaCreacion = documento.data()['fechaCreacion'].toDate();
+      }
+      this.listaTickets.push(ticketTemporal);
+    });
+  }
 
+  // DIR#9B (referencia al doc): CREAR (POST)
+  async agregarTicket(solicitanteIngresado: string, tituloIngresado: string, descripcionIngresada: string, tipoIngresado: string, asignacionIngresada: string, categoriaIngresada: string) {
+    const nuevoIncidente = {
+      solicitante: solicitanteIngresado,
+      titulo: tituloIngresado,
+      descripcion: descripcionIngresada,
+      tipo: tipoIngresado,
+      asignacion: asignacionIngresada,
+      categoria: categoriaIngresada,
+      abierto: true,
+      fechaCreacion: new Date() // Firebase lo convierte automatico
+    };
+    
+    const coleccion = collection(this.firestore, 'tickets');
+    await addDoc(coleccion, nuevoIncidente); // Lo sube a la bd
+    
+    this.obtenerTicketsDeFirestore(); // Refrescamos la grilla pidiendo los datos actualizados
+  }
   
+  obtenerTicketPorId(idBuscado: string) {// Buscar uno solo localmente (Para autocompletar el formulario al editar)
+    return this.listaTickets.find(ticket => ticket.id_ticket === idBuscado);
+  }
+
+  // DIR#9C (ref doc): ACTUALIZAR (PUT)
+  async actualizarTicket(idBuscado: string, tituloNuevo: string, descripcionNueva: string, tipoNuevo: string, asignacionNueva: string, categoriaNueva: string) {
+    const referencia = doc(this.firestore, 'tickets', idBuscado); // Buscamos el documento exacto
+    await updateDoc(referencia, {
+      titulo: tituloNuevo,
+      descripcion: descripcionNueva,
+      tipo: tipoNuevo,
+      asignacion: asignacionNueva,
+      categoria: categoriaNueva
+    });
+    this.obtenerTicketsDeFirestore();
+  }
+
+  async resolverTicket(idBuscado: string) {
+    const referencia = doc(this.firestore, 'tickets', idBuscado);
+    await updateDoc(referencia, { abierto: false });
+    this.obtenerTicketsDeFirestore();
+  }
+
+  // DIR#9D (ref doc): BORRAR (DELETE) 
+  async eliminarTicket(idBuscado: string) {
+    const referencia = doc(this.firestore, 'tickets', idBuscado);
+    await deleteDoc(referencia);
+    this.obtenerTicketsDeFirestore();
+  }
 }

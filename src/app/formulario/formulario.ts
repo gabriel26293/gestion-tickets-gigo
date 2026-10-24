@@ -23,12 +23,13 @@ export class Formulario implements OnInit {
     tipo: new FormControl('Incidente', Validators.required),
     asignacion: new FormControl('Soporte Tecnico', Validators.required),
     categoria: new FormControl('Pc-Escritorio', Validators.required)
-    //equipo: new FormControl(''),//opcional
-    
+    //equipo: new FormControl(''),//opcional    
   });
 
+  /* CODIGO VIEJO #DIR9 Migracion a firestone me exige cambiar id_ticket a string y ya no es number
   //Si es mayor a 0 editamos. Si es 0 creamos
-  idEdicion: number = 0; 
+  idEdicion: number = 0;*/
+  idEdicion: string = ''; //#DIR9 ahora es string, antes number 
 
   constructor(
     private miServicio: TicketService,
@@ -47,11 +48,13 @@ export class Formulario implements OnInit {
 
     if (idEnLaUrl !== null) {
       
-      this.idEdicion = Number(idEnLaUrl);
+      //#DIR9 this.idEdicion = Number(idEnLaUrl); ya no tengo que convertirlo
+      this.idEdicion = idEnLaUrl;
 
       const ticketAEditar = this.miServicio.obtenerTicketPorId(this.idEdicion);//busco ticket
 
-      if (ticketAEditar !== undefined) { //si pasa el control autocompleta con react ;)
+      //#DIR9 Para migracion a firestore if (ticketAEditar !== undefined) { //si pasa el control autocompleta con react ;)
+      if (ticketAEditar !== undefined) { //si pasa el control autocompleta con react ;)  
         this.ticketFormulario.setValue({
           titulo: ticketAEditar.titulo,
           descripcion: ticketAEditar.descripcion,
@@ -71,7 +74,8 @@ export class Formulario implements OnInit {
 
     const datos = this.ticketFormulario.value;
 
-    if (this.idEdicion > 0) {//edicion
+    //#DIR9 Cambio para migrar a firestone if (this.idEdicion > 0) {//edicion
+    if (this.idEdicion !== '') { // edicion
       this.miServicio.actualizarTicket(
         this.idEdicion,
         datos.titulo || '',  //pudimos usasr datos.titulo!
