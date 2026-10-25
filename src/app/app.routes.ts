@@ -2,8 +2,8 @@ import { Routes } from '@angular/router';
 import { Formulario } from './formulario/formulario';
 import { ListaTicket } from './lista-ticket/lista-ticket';
 import { LoginComponent } from './login/login';
-import { authGuard } from '../guardianes/auth-guard';//#DIR4 importo al patova implementado en auth-guard.ts
-import { DetalleTicket } from '../detalle-ticket/detalle-ticket';//DIR18 MEJORA PARA ver/consultar DE TICKETS 
+import { authGuard } from './guardianes/auth-guard';//#DIR4 importo al patova implementado en auth-guard.ts
+import { DetalleTicket } from './detalle-ticket/detalle-ticket';//DIR18 MEJORA PARA ver/consultar DE TICKETS 
 import { DashboardComponent } from './dashboard/dashboard'; // #DIR22 ajusto ruta
 
 export const rutas: Routes = [

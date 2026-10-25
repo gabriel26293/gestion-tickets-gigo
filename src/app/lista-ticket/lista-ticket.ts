@@ -7,11 +7,12 @@ import { FiltroTicketsPipe } from '../pipes/filtro-tickets-pipe'; //#DIR7 pedido
 import {  signal } from '@angular/core';//DIR8 Uso de signals (Parte C)
 import { SlicePipe, UpperCasePipe} from '@angular/common'; //#DIR10 Hash Corto para mejorar la UX del usuario (sobre el id de ticket).. ya se que podiamos agregarlo arriba pero queria seguir un orden ;)
 import { ExportarCsvService } from '../exportar-csv.service'; //#DIR21 solo para exportar csv
+import { FormsModule } from '@angular/forms';//#DIR25 para la mejora de resolucion. maneja la box de texto temporalmente sin que se recargue la pagina. usaremos variables booleanas
 
 @Component({
   selector: 'app-lista-ticket',
   standalone: true,
-  imports: [DatePipe, RouterLink, FiltroTicketsPipe, SlicePipe, UpperCasePipe, ],//#DIR7 forma parte del pedido FiltroTicketsPipe #DIR10 mejora UX usuario idticket SlicePipe UpperCasePipe
+  imports: [DatePipe, RouterLink, FiltroTicketsPipe, SlicePipe, UpperCasePipe, FormsModule],//#DIR7 forma parte del pedido FiltroTicketsPipe #DIR10 mejora UX usuario idticket SlicePipe UpperCasePipe //#DIR25 agregue FormsModule como componente para la mejora
   templateUrl: './lista-ticket.html',
   styleUrl: './lista-ticket.css'
 })
@@ -98,9 +99,10 @@ export class ListaTicket implements OnInit {
   resolverTicket(idBuscado: string | undefined) {
     this.miServicio.resolverTicket(idBuscado);
   }*/
-  resolverTicket(idBuscado: string | undefined) {
+  /*#DIR25 Este meotdo quedo VIEJO, fue mudado a detalle.tickets.ts 
+    resolverTicket(idBuscado: string | undefined) {
     if(idBuscado) this.miServicio.resolverTicket(idBuscado);
-  }
+  }*/
 
   //#DIR24 MEJORA no quiero el boton en la pantalla principal ni dejarlo a lista tickets que decida, lo mudamos
   /*#DIR9 CODIGO VIEJO - eliminarTicket(id_ticket_buscado: number) { #DIR9 idem linea 90 metodo resolverTicket

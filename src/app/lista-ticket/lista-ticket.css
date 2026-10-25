@@ -22,3 +22,15 @@
 .btn-resolver { background-color: #f39c12; }
 .btn-borrar { background-color: #c0392b; }
 .btn-editar { background-color: #3498db; }
+
+/*#DIR26 para darle animacion que lata ocomo corazon*/
+.btn-alerta-chat {
+  background-color: #8e44ad !important;
+  color: white;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {/*#DIR26 para darle animacion que lata ocomo corazon*/
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(142, 68, 173, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(142, 68, 173, 0); }
+}

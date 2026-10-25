@@ -3,6 +3,7 @@ import { Ticket } from './ticket.model'; //el molde que migre
 import { Firestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from '@angular/fire/firestore';// Importamos  herramientas dde Firestore
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage'; //#DIR13 herramientas de AngularFire para Storage (subir a la nube)
 import { signal } from '@angular/core'; // #DIR14 solucion al refresh del html, cada vez que me logeo no veo los tickets, el signal nos va a ayudar
+import {onSnapshot} from '@angular/fire/firestore' //#DIR27 MEJORA del refresh de chat venimos de chat.service.ts
 
 /*#DIR6Mudado a ticket.model.ts a pedido del profe
 export interface Ticket{
@@ -126,8 +127,27 @@ export class TicketService {
   }
 */
   // DIR#9A (referencia al doc): LEER (GET) - Traer tickets de la nube
-  async obtenerTicketsDeFirestore() {
-    const coleccion = collection(this.firestore, 'tickets'); // Apunta a la carpeta "tickets"
+  obtenerTicketsDeFirestore() { // Eliminamos async
+      const coleccion = collection(this.firestore, 'tickets'); // Apunta a la carpeta "tickets"
+      
+      onSnapshot(coleccion, (respuesta) => {
+        const ticketsTemporales: Ticket[] = [];
+
+        respuesta.forEach((documento) => {
+          const ticketTemporal = documento.data() as Ticket;
+          ticketTemporal.id_ticket = documento.id; 
+          
+          if (documento.data()['fechaCreacion']) {
+            ticketTemporal.fechaCreacion = documento.data()['fechaCreacion'].toDate();
+          }
+          ticketsTemporales.push(ticketTemporal);
+        });
+        
+        this.listaTickets.set(ticketsTemporales); 
+      });
+    }
+
+    /*#DIR27 CODIGO VIEJO ahora busco refrescar solito el chat sin darle f5
     const respuesta = await getDocs(coleccion);
     
     //this.listaTickets = []; // vacio la memoria temporal (esta mal). #DIR9 ERROR- Lo mude porque sino mostraba 0 tickets, lo mejore en la siguiente linea
@@ -144,7 +164,7 @@ export class TicketService {
     });
     //this.listaTickets = ticketsTemporales;//#DIR9 lo asigno directo y el pipe conecta el cambio al toque y dibuja tabla.  #DIR14 nos dio dolor de cabeza tuve que optar por signal, siguiente linea de codigo
     this.listaTickets.set(ticketsTemporales); //#DIR14 mejora con signal para refrescar lista de tickets
-  }
+  }*/
 
   // DIR#9B (referencia al doc): CREAR (POST) - #DIR13:  
   /*CODIGO VIEJO REEMPLAZADO POR #DIR13 SUBIR IMAGEN 
@@ -193,7 +213,7 @@ export class TicketService {
       const coleccion = collection(this.firestore, 'tickets');
       await addDoc(coleccion, nuevoIncidente); // Lo sube a la bd
       
-      this.obtenerTicketsDeFirestore(); // Refrescamos la grilla pidiendo los datos actualizados
+      //#DIR27 MEJORA YA NO ES NECESARIO this.obtenerTicketsDeFirestore(); // Refrescamos la grilla pidiendo los datos actualizados
     }
   
   obtenerTicketPorId(idBuscado: string) {// Buscar uno solo localmente (Para autocompletar el formulario al editar)
@@ -223,16 +243,34 @@ export class TicketService {
     this.obtenerTicketsDeFirestore();
   }
 
-  async resolverTicket(idBuscado: string) {
+// DIR#9C: ACTUALIZAR ESTADO (PUT) - #DIR25 Agregamos la justificacion
+  async resolverTicket(idBuscado: string, justificacion: string) {
     const referencia = doc(this.firestore, 'tickets', idBuscado);
-    await updateDoc(referencia, { abierto: false });
+    await updateDoc(referencia, { 
+      abierto: false,
+      justificacionResolucion: justificacion
+    });
     this.obtenerTicketsDeFirestore();
   }
 
-  // DIR#9D (ref doc): BORRAR (DELETE) 
+// DIR#9D: BORRAR (DELETE) 
   async eliminarTicket(idBuscado: string) {
     const referencia = doc(this.firestore, 'tickets', idBuscado);
     await deleteDoc(referencia);
     this.obtenerTicketsDeFirestore();
   }
+
+  // #DIR26 MEJORA Apagar alerta de chat al entrar al ticket, despues de aca me voy a detalle-ticket.ts para apagar el apagado automatico en ngOnInit()
+  async apagarAlerta(idBuscado: string, rolLogueado: string) {
+    const referencia = doc(this.firestore, 'tickets', idBuscado);
+    
+    if (rolLogueado === 'admin' || rolLogueado === 'administrador' || rolLogueado === 'ADMIN') {
+      await updateDoc(referencia, { alertaAdmin: false });
+    } else {
+      await updateDoc(referencia, { alertaUser: false });
+    }
+    this.obtenerTicketsDeFirestore();
+  }
+
+
 }

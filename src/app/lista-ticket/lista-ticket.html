@@ -125,16 +125,41 @@
         
         <td style="padding: 12px;">
           <div class="celda-acciones">
-            <!--DIR18 MEJORA PARA VISUALIZAR EL TICKET DEPENDIENDO DEL ROLL-->
-            <button routerLink="/detalle/{{ ticket.id_ticket }}" class="btn-accion btn-ver">
-              🔍 Ver
-            </button>
 
+            <!--#DIR26 MEJORA En el siguiente codigo. ESTO ES VIEJO-->
+
+            <!-- #DIR26 Botón VER dinámico con alertas de chat -->
+            @if (rolLogueado === 'admin' || rolLogueado === 'administrador' || rolLogueado === 'ADMIN') {
+              @if (ticket.alertaAdmin === true) {
+                <button routerLink="/detalle/{{ ticket.id_ticket }}" class="btn-accion btn-alerta-chat">
+                  🔔 Chat Nuevo
+                </button>
+              } @else {
+                <button routerLink="/detalle/{{ ticket.id_ticket }}" class="btn-accion btn-ver">
+                  🔍 Ver
+                </button>
+              }
+            } @else {
+              @if (ticket.alertaUser === true) {
+                <button routerLink="/detalle/{{ ticket.id_ticket }}" class="btn-accion" style="background-color: #8e44ad; animation: pulse 2s infinite;">
+                  🔔 Chat Nuevo
+                </button>
+              } @else {
+                <button routerLink="/detalle/{{ ticket.id_ticket }}" class="btn-accion btn-ver">
+                  🔍 Ver
+                </button>
+              }
+            }
+            <!--DIR18 MEJORA PARA VISUALIZAR EL TICKET DEPENDIENDO DEL ROLL-->
+            <!--button routerLink="/detalle/{{ ticket.id_ticket }}" class="btn-accion btn-ver">
+              🔍 Ver
+            </button-->
+            <!--#DIR25 MEJORA - Eliminacion con justificacion - Lo mude detalle-ticket.htlm
             @if (ticket.abierto && rolLogueado === 'admin') {
               <button (click)="resolverTicket(ticket.id_ticket)" class="btn-accion btn-resolver">
                 ✔ Resolver
               </button>
-            }
+            }-->
             <!-- #DIR24 MEJORA ES PELIGROSO QUE EL BOTON ESTE ACA LO VAMOS A MUDAR
             @if (rolLogueado === 'admin'){
               <button (click)="eliminarTicket(ticket.id_ticket)" class="btn-accion btn-borrar">

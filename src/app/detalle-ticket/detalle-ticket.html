@@ -1,9 +1,21 @@
 <!--DIR18 - MEJORA PARA EDITAR LOS TICKETS TODO ESTE DOCUMENTO A ESO SE DEDICA-->
 
 <div style="max-width: 700px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-  <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 0;">
+<!--#DIR25 MEJORA PARA EL DETALLE DE INCIDENTE SIGUIENTE LINEA-->
+  <!--h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 0;">
     🔍 Detalle del Incidente #{{ ticketActual?.id_ticket | slice:0:5 | uppercase }}
-  </h2>
+  </h2-->
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 0; margin-bottom: 20px;">
+    <h2 style="color: #2c3e50; margin: 0;"> <!--#DIR25 mejora para el detalle del incidente-->
+      🔍 Detalle del Incidente #{{ ticketActual?.id_ticket | slice:0:5 | uppercase }}
+    </h2>
+
+    @if (esAdmin()) {
+      <button (click)="eliminarTicket()" style="background-color: #c0392b; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9em;">
+        🗑️ Eliminar
+      </button>
+    }
+  </div>
 
   @if (cargando) {
     <div style="text-align: center; padding: 40px;">
@@ -45,18 +57,51 @@
       <app-chat-ticket [idTicket]="ticketActual.id_ticket"></app-chat-ticket>
     }
 
+    <!-- #DIR25 Modulo de resolucion interactiva -->
+    @if (ticketActual.abierto && esAdmin()) {
+      <div style="margin-top: 30px; padding: 20px; background-color: #fff3e0; border-radius: 8px; border-left: 4px solid #f39c12;">
+        <h4 style="margin-top: 0; color: #d35400;">⚙️ Resolución del Incidente</h4>
+
+        @if (mostrandoCajaResolucion === false) {
+          <button (click)="iniciarResolucion()" style="background-color: #f39c12; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+            ✔ Iniciar Resolución
+          </button>
+        } @else {
+          <p style="margin-bottom: 10px; font-weight: bold; color: #333;">Justificación de cierre (Obligatorio):</p>
+          <textarea [(ngModel)]="textoResolucion" placeholder="Detalle la solución técnica aplicada..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; min-height: 80px; margin-bottom: 15px;"></textarea>
+
+          <div style="display: flex; gap: 10px;">
+            <button (click)="confirmarResolucion()" style="background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+              ✅ Confirmar Cierre
+            </button>
+            <button (click)="cancelarResolucion()" style="background-color: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+              ❌ Cancelar
+            </button>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Panel de lectura si ya fue resuelto -->
+    @if (ticketActual.abierto === false && ticketActual.justificacionResolucion) {
+      <div style="margin-top: 30px; padding: 20px; background-color: #e8f8f5; border-radius: 8px; border-left: 4px solid #1abc9c;">
+        <h4 style="margin-top: 0; color: #16a085;">✅ Incidente Resuelto</h4>
+        <p style="margin: 0; color: #2c3e50; white-space: pre-wrap;"><strong>Motivo de cierre:</strong><br>{{ ticketActual.justificacionResolucion }}</p>
+      </div>
+    }
+
     <br>
 
     <div style="display: flex; gap: 15px; align-items: center;">
       <button (click)="volver()" style="background-color: #7f8c8d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
         ⬅ Volver al Listado
       </button>
-
-      @if (esAdmin()) {
+    <!--#DIR25 PARTE DE LA MEJORA es quitar el Eliminar Incidente-->  
+    <!--@if (esAdmin()) {
         <button (click)="eliminarTicket()" style="background-color: #c0392b; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
           🗑️ Eliminar Incidente
         </button>
-      }
+      }-->
     </div>
   } @else {
     <p style="color: #e74c3c; font-weight: bold;">No se encontro el incidente solicitado.</p>

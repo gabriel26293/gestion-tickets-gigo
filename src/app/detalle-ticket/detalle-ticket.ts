@@ -2,21 +2,24 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, SlicePipe, UpperCasePipe, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TicketService } from '../app/ticket.service';
-import { Ticket } from '../app/ticket.model';
+import { TicketService } from '../ticket.service';
+import { Ticket } from '../ticket.model';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';//IMPORTO Firestore para buscar directo si recargan F5
 import {ChangeDetectorRef } from '@angular/core' //#FIX1 de #DIR18 visualizacion se rompe con f5
-import {ChatTicket } from '../app/chat/chat-ticket/chat-ticket'; //#DIR23 para el chat
+import {ChatTicket } from '../chat/chat-ticket/chat-ticket'; //#DIR23 para el chat
+import { FormsModule } from '@angular/forms';//#DIR25 MEJORA PARA resolucion y justifcacion de tickets
 
 @Component({
   selector: 'app-detalle-ticket',
   standalone: true,
-  imports: [CommonModule, SlicePipe, UpperCasePipe, DatePipe, ChatTicket], //#DIR23 agrege el chatticket poara el chat
+  imports: [CommonModule, SlicePipe, UpperCasePipe, DatePipe, ChatTicket, FormsModule], //#DIR23 agrege el chatticket poara el chat //#DIR25 Agregue FormsModule para la mejora de resolucion y justificacion de cierre de ticket
   templateUrl: './detalle-ticket.html'
 })
 export class DetalleTicket implements OnInit {
   ticketActual: Ticket | undefined;
   cargando: boolean = true;//#DIR18 mejora para cuando le doy a f5 no perder visualizacion al ver el ticket
+  mostrandoCajaResolucion: boolean = false; //#DIR25 mejora para la caja de resolucion del ticket (lo usamos mas abajo en iniciarResolucion() y cancelarResolucion() )
+  textoResolucion: string = ''; //#DIR25 mejora para la caja de resolucion del ticket. Lo usamos mas abajo en  cancelarResolucion() y confirmarResolucion()
 
   constructor(
     private rutaActiva: ActivatedRoute,
@@ -52,6 +55,22 @@ export class DetalleTicket implements OnInit {
               id_ticket: snapshot.id,
               fechaCreacion: fechaParseada
             };
+
+            //#DIR26 MEJORA para apagarle la campanita al ver el mensaje. De aca salto directo a lista-ticket.html para la magia
+              const sesion = localStorage.getItem('sesion_usuario');
+              if (sesion !== null) {
+                const datosSesion = JSON.parse(sesion);
+                
+                let rolDetectado = '';// Validamos si la propiedad se llama rol o role
+                if (datosSesion.rol) {
+                  rolDetectado = datosSesion.rol;
+                } else {
+                  rolDetectado = datosSesion.role;
+                }
+                this.miServicio.apagarAlerta(this.ticketActual.id_ticket, rolDetectado);
+              }
+
+
           }
         }
       }
@@ -109,6 +128,31 @@ export class DetalleTicket implements OnInit {
           this.enrutador.navigate(['/incidentes']); // Lo devolvemos a la planilla luego de borrar
         } else {
           // El usuario cancelo la alerta, no hacemos nada
+        }
+      }
+    }
+  }
+
+  iniciarResolucion() {
+    this.mostrandoCajaResolucion = true;
+  }
+
+  cancelarResolucion() {
+    this.mostrandoCajaResolucion = false;
+    this.textoResolucion = '';
+  }
+
+  confirmarResolucion() {
+    if (this.ticketActual) {
+      if (this.ticketActual.id_ticket) {
+        if (this.textoResolucion.trim() !== '') {
+          const confirmacion = window.confirm("¿Está seguro de cerrar este incidente de forma permanente?");
+          if (confirmacion === true) {
+            this.miServicio.resolverTicket(this.ticketActual.id_ticket, this.textoResolucion);
+            this.enrutador.navigate(['/incidentes']);
+          }
+        } else {
+          alert("Por favor, ingrese una justificación para poder resolver el ticket.");
         }
       }
     }

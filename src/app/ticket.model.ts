@@ -11,4 +11,7 @@ export interface Ticket{
   abierto: boolean;
   fechaCreacion: Date;
   imagenUrl?: string //#DIR11 para adjuntar img, lo linkeo a #DIR12 del "formulario.html" <input type="file" (change)="seleccionarImagen($event)">
+  justificacionResolucion?: string; // #DIR25 para la resolucion MEJORA
+  alertaAdmin?: boolean; // #DIR26 mejora banderas de notificacion de chat
+  alertaUser?: boolean; // #DIR26 MEjora banderas de notificacion de chat
 }
