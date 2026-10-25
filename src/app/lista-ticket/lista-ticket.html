@@ -122,39 +122,42 @@
           </button>  
         </td>-->
         <!-- Acciones protegidas por Rol (#Dir17) -->
+        
         <td style="padding: 12px;">
-
-          <!--DIR18 MEJORA PARA VISUALIZAR EL TICKET DEPENDIENDO DEL ROLL-->
-          <button routerLink="/detalle/{{ ticket.id_ticket }}" style="background-color: #16a085; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em; font-weight: bold; margin-right: 5px;">
-            🔍 Ver
-          </button>
-
-          @if (ticket.abierto && rolLogueado === 'admin') {
-            <button (click)="resolverTicket(ticket.id_ticket)" style="background-color: #f39c12; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em; font-weight: bold; margin-right: 5px;">✔ Resolver</button>
-          }
-          
-          @if (rolLogueado === 'admin'){
-            <button (click)="eliminarTicket(ticket.id_ticket)" style="background-color: #c0392b; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em; font-weight: bold; margin-right: 5px;">
-            🗑️ Borrar
+          <div class="celda-acciones">
+            <!--DIR18 MEJORA PARA VISUALIZAR EL TICKET DEPENDIENDO DEL ROLL-->
+            <button routerLink="/detalle/{{ ticket.id_ticket }}" class="btn-accion btn-ver">
+              🔍 Ver
             </button>
-          }
-          
-          <!-- El usuario comunn solo edita si el ticket es suyo, el admin edita cualquiera -->
-          @if (rolLogueado === 'admin' || ticket.solicitante === usuarioLogueado) {
-            <button routerLink="/editar/{{ ticket.id_ticket }}" style="background-color: #3498db; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;  font-size: 0.8em; font-weight: bold;">
-             ✏️ Editar
-            </button>  
-          }
-        </td>
 
+            @if (ticket.abierto && rolLogueado === 'admin') {
+              <button (click)="resolverTicket(ticket.id_ticket)" class="btn-accion btn-resolver">
+                ✔ Resolver
+              </button>
+            }
+            <!-- #DIR24 MEJORA ES PELIGROSO QUE EL BOTON ESTE ACA LO VAMOS A MUDAR
+            @if (rolLogueado === 'admin'){
+              <button (click)="eliminarTicket(ticket.id_ticket)" class="btn-accion btn-borrar">
+                🗑️ Borrar
+              </button>
+            }-->
+            <!-- El usuario comunn solo edita si el ticket es suyo, el admin edita cualquiera -->
+            @if (rolLogueado === 'admin' || ticket.solicitante === usuarioLogueado) {
+              <button routerLink="/editar/{{ ticket.id_ticket }}" class="btn-accion btn-editar">
+              ✏️ Editar
+              </button>  
+            }
+          </div>
+        </td>
+        
 
         <td style="padding: 12px;">{{ ticket.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}</td>
       </tr>
-    } @empty {
-      <tr>
-        <td colspan="7" style="padding: 20px; text-align: center; color: #7f8c8d; font-style: italic;">
-          No hay incidentes para mostrar con el filtro actual.
-        </td>
+        } @empty {
+          <tr>
+            <td colspan="7" style="padding: 20px; text-align: center; color: #7f8c8d; font-style: italic;">
+              No hay incidentes para mostrar con el filtro actual.
+            </td>
       </tr>
     }
   </tbody>

@@ -11,8 +11,9 @@ import { ExportarCsvService } from '../exportar-csv.service'; //#DIR21 solo para
 @Component({
   selector: 'app-lista-ticket',
   standalone: true,
-  imports: [DatePipe, RouterLink, FiltroTicketsPipe, SlicePipe, UpperCasePipe],//#DIR7 forma parte del pedido FiltroTicketsPipe #DIR10 mejora UX usuario idticket SlicePipe UpperCasePipe
-  templateUrl: './lista-ticket.html'
+  imports: [DatePipe, RouterLink, FiltroTicketsPipe, SlicePipe, UpperCasePipe, ],//#DIR7 forma parte del pedido FiltroTicketsPipe #DIR10 mejora UX usuario idticket SlicePipe UpperCasePipe
+  templateUrl: './lista-ticket.html',
+  styleUrl: './lista-ticket.css'
 })
 export class ListaTicket implements OnInit {
 
@@ -101,13 +102,14 @@ export class ListaTicket implements OnInit {
     if(idBuscado) this.miServicio.resolverTicket(idBuscado);
   }
 
+  //#DIR24 MEJORA no quiero el boton en la pantalla principal ni dejarlo a lista tickets que decida, lo mudamos
   /*#DIR9 CODIGO VIEJO - eliminarTicket(id_ticket_buscado: number) { #DIR9 idem linea 90 metodo resolverTicket
   eliminarTicket(id_ticket_buscado: string | undefined) {
     this.miServicio.eliminarTicket(id_ticket_buscado);
   }*/
-  eliminarTicket(id_ticket_buscado: string | undefined) {
-    if(id_ticket_buscado) this.miServicio.eliminarTicket(id_ticket_buscado);
-  }
+  //eliminarTicket(id_ticket_buscado: string | undefined) {
+  //  if(id_ticket_buscado) this.miServicio.eliminarTicket(id_ticket_buscado);
+  //}
   
   exportarCSV() {// #DIR21 Disparo la descarga del cvs delegando al servicio
     this.exportadorCsv.descargarCSV(this.ticketsMostrados, 'Gigo_Incidentes.csv');

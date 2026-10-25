@@ -64,6 +64,56 @@ export class DetalleTicket implements OnInit {
     }
   }
 
+  //#DIR24 MUDANZA de parte del codigo que borra el ticket, antes estaba en lista-tickets.ts, consideramos que era pegriloso
+  esAdmin(): boolean {
+    const sesion = localStorage.getItem('sesion_usuario');
+    if (sesion !== null) {
+      const datos = JSON.parse(sesion);
+      let validacionAdmin = false;
+
+      if (datos.rol === 'admin') {
+        validacionAdmin = true;
+      } else if (datos.rol === 'administrador') {
+        validacionAdmin = true;
+      } else if (datos.rol === 'Administrador') {
+        validacionAdmin = true;
+      } else if (datos.rol === 'ADMIN') {
+        validacionAdmin = true;
+      }
+      
+      if (datos.username === 'admin') {
+        validacionAdmin = true;
+      } else if (datos.username === 'administrador') {
+        validacionAdmin = true;
+      } else if (datos.username === 'admin@gigo.com') {
+        validacionAdmin = true;
+      }
+
+      if (validacionAdmin === true) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  eliminarTicket() {
+    if (this.ticketActual) {
+      if (this.ticketActual.id_ticket) {
+        const confirmacion = window.confirm("¿Esta seguro de eliminar este incidente de forma permanente?");
+        
+        if (confirmacion === true) {
+          this.miServicio.eliminarTicket(this.ticketActual.id_ticket);
+          this.enrutador.navigate(['/incidentes']); // Lo devolvemos a la planilla luego de borrar
+        } else {
+          // El usuario cancelo la alerta, no hacemos nada
+        }
+      }
+    }
+  }
+
   volver() {
     this.enrutador.navigate(['/incidentes']);
   }

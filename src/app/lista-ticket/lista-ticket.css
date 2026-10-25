@@ -1,0 +1,24 @@
+/*para mantener un orden de los botones, por ahora este es el maquillaje que metemos a los botones accion*/
+.celda-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 175px;
+}
+
+.btn-accion {
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: bold;
+}
+
+.btn-ver { background-color: #16a085; }
+.btn-resolver { background-color: #f39c12; }
+.btn-borrar { background-color: #c0392b; }
+.btn-editar { background-color: #3498db; }

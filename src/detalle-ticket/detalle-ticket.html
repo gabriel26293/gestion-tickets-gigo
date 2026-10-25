@@ -47,9 +47,17 @@
 
     <br>
 
-    <button (click)="volver()" style="background-color: #7f8c8d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
-      ⬅ Volver al Listado
-    </button>
+    <div style="display: flex; gap: 15px; align-items: center;">
+      <button (click)="volver()" style="background-color: #7f8c8d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+        ⬅ Volver al Listado
+      </button>
+
+      @if (esAdmin()) {
+        <button (click)="eliminarTicket()" style="background-color: #c0392b; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+          🗑️ Eliminar Incidente
+        </button>
+      }
+    </div>
   } @else {
     <p style="color: #e74c3c; font-weight: bold;">No se encontro el incidente solicitado.</p>
     <button (click)="volver()" style="background-color: #7f8c8d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
