@@ -40,11 +40,18 @@
         </div>
     }
 
+   
+    @if (ticketActual.id_ticket) { <!-- #DIR23 agrego el sub..modulo de chat -->
+      <app-chat-ticket [idTicket]="ticketActual.id_ticket"></app-chat-ticket>
+    }
+
+    <br>
+
     <button (click)="volver()" style="background-color: #7f8c8d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
       ⬅ Volver al Listado
     </button>
   } @else {
-    <p style="color: #e74c3c; font-weight: bold;">No se encontró el incidente solicitado.</p>
+    <p style="color: #e74c3c; font-weight: bold;">No se encontro el incidente solicitado.</p>
     <button (click)="volver()" style="background-color: #7f8c8d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
       Volver
     </button>

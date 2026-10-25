@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
-import { AutenticacionService } from '.././autenticacion.service'; // importo servicio
+import { AutenticacionService } from '.././autenticacion.service'; // importo servicio de autenticacion
 //import { FormsModule } from '@angular/forms';
 //import { TicketService, Ticket } from './ticket.service';
 //import { DatePipe } from '@angular/common';
@@ -24,11 +24,11 @@ interface Ticket{
 })
 export class App { //clase principal
   
-  // DIR#3: Inyecto0 el servicio de autenticacion ademas del enrutador
+  //#DIR3: Inyecto0 el servicio de autenticacion ademas del enrutador
   constructor(public enrutador: Router, private servicioAuth: AutenticacionService) {} //por ahora el enrutador lo dejamos public
 
-  //DIR3-funcion
-  // Modificamos la función para que le avise a Firebase primero
+  //#DIR3-funcion
+  // Modificamos la funcion para que le avise a Firebase primero
   cerrarSesion() {    
     this.servicioAuth.cerrarSesionDeFirebase()// Le pedo a firebase que destruya la sesion en la nubee
       .then(() => { // Usamos .then() para: "Cuando termines de apagar todo, recien ahi borra el navegador"
@@ -38,6 +38,45 @@ export class App { //clase principal
       .catch((error) => {
         console.error("Hubo un error cerrando sesión en Firebase:", error);
       });
+  }
+
+esAdmin(): boolean {//#DIR22 una de las ultimas mejoras para vlidar usuario y luego lo uso para el tablero
+    const sesion = localStorage.getItem('sesion_usuario');
+    
+    if (sesion !== null) {
+      const datos = JSON.parse(sesion);
+      let validacionAdmin = false;
+
+      
+      if (datos.rol === 'admin') {// valido la propiedad rol (incluyendo variantes en maysculas del banner etc)
+        validacionAdmin = true;
+      } else if (datos.rol === 'administrador') {
+        validacionAdmin = true;
+      } else if (datos.rol === 'Administrador') {
+        validacionAdmin = true;
+      } else if (datos.rol === 'ADMIN') {
+        validacionAdmin = true;
+      } 
+      
+      
+      if (datos.username === 'admin') {//ValidO por nombre de usuario el correo en pantalla
+        validacionAdmin = true;
+      } else if (datos.username === 'administrador') {
+        validacionAdmin = true;
+      } else if (datos.username === 'admin@gigo.com') {
+        validacionAdmin = true;
+      }
+
+      
+      if (validacionAdmin === true) {//Resolucion logica final
+        return true;
+      } else {
+        return false;
+      }
+
+    } else {
+      return false;
+    }
   }
   /*//vieja funcion mejorada en #DIR3-funcion
     cerrarSesion() {

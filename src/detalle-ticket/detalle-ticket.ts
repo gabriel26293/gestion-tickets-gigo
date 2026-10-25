@@ -6,11 +6,12 @@ import { TicketService } from '../app/ticket.service';
 import { Ticket } from '../app/ticket.model';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';//IMPORTO Firestore para buscar directo si recargan F5
 import {ChangeDetectorRef } from '@angular/core' //#FIX1 de #DIR18 visualizacion se rompe con f5
+import {ChatTicket } from '../app/chat/chat-ticket/chat-ticket'; //#DIR23 para el chat
 
 @Component({
   selector: 'app-detalle-ticket',
   standalone: true,
-  imports: [CommonModule, SlicePipe, UpperCasePipe, DatePipe],
+  imports: [CommonModule, SlicePipe, UpperCasePipe, DatePipe, ChatTicket], //#DIR23 agrege el chatticket poara el chat
   templateUrl: './detalle-ticket.html'
 })
 export class DetalleTicket implements OnInit {
