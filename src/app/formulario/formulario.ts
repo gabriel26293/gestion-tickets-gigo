@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core'; //lo engancho con el import l
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { TicketService } from '../ticket.service'; 
 import { ActivatedRoute, Router } from '@angular/router';
+import {Firestore, doc, getDoc}  from '@angular/fire/firestore'; //#DIR19 lo sumo en otra linea para tener mejor seguimiento del dir. IMPORTO Firestore para buscar directo si recargan F5
+
 
 @Component({
   selector: 'app-formulario',
@@ -31,14 +33,16 @@ export class Formulario implements OnInit {
   idEdicion: number = 0;*/
   idEdicion: string = ''; //#DIR9 ahora es string, antes number
   archivoSeleccionado: File | null = null; //#DIR12 variable para guardar temporalmente el archivo img del usuario 
+  imagenActual: string = ''; // #DIR20 mejora variable para guardar la URL de la imagen que ya tiene el ticket 
 
   constructor(
     private miServicio: TicketService,
     private rutaActiva: ActivatedRoute, // lee el numero de la url
-    private enrutador: Router           // manda al usuario de vuelta a la tabla
+    private enrutador: Router,           // manda al usuario de vuelta a la tabla
+    private firestore: Firestore //#DIR19 sumo esto para el rescate
   ) {}
     
-  ngOnInit() {// EDITAR - Este metodo se ejecuta automaticamente un milisegundo despues de abrir la pantalla
+  async ngOnInit() {// EDITAR - Este metodo se ejecuta automaticamente un milisegundo despues de abrir la pantalla //#DIR19 tuve que agregar async para usar await linea68
     
     const sesion = localStorage.getItem('sesion_usuario');
     if (sesion !== null) { //buscamos el usuario para colocarlo en el label, con mysql esto ya ni llo usariamos
@@ -49,10 +53,24 @@ export class Formulario implements OnInit {
 
     if (idEnLaUrl !== null) {
       
+      /*CODIGO VIEJO - #DIR19 REMPLAZA A #DIR9 . LO MEJORE
       //#DIR9 this.idEdicion = Number(idEnLaUrl); ya no tengo que convertirlo
       this.idEdicion = idEnLaUrl;
-
       const ticketAEditar = this.miServicio.obtenerTicketPorId(this.idEdicion);//busco ticket
+      */
+     //#DIR19 mejora de edicion
+     this.idEdicion = idEnLaUrl;
+     
+      let ticketAEditar = this.miServicio.obtenerTicketPorId(this.idEdicion);// Busco rapido en la memoria local (Signal)
+
+      
+      if (!ticketAEditar) {// Si recargaron con F5 y la memoria esta vacia, rescatamos de Firebase directamente
+        const refDoc = doc(this.firestore, 'tickets', this.idEdicion);
+        const snapshot = await getDoc(refDoc); //#DIR19 tuve que hacer async el metodo porque sino no andaba await
+        if (snapshot.exists()) {
+          ticketAEditar = snapshot.data() as any; 
+        }
+      }
 
       //#DIR9 Para migracion a firestore if (ticketAEditar !== undefined) { //si pasa el control autocompleta con react ;)
       if (ticketAEditar !== undefined) { //si pasa el control autocompleta con react ;)  
@@ -63,6 +81,14 @@ export class Formulario implements OnInit {
           asignacion: ticketAEditar.asignacion,
           categoria: ticketAEditar.categoria
         });
+
+        
+        if (ticketAEditar.imagenUrl) {//#DIR20 MEJORA RESCATO la imagen si existe
+          this.imagenActual = ticketAEditar.imagenUrl;
+        } else {
+          this.imagenActual = '';
+        }
+
       }
     }
   }
@@ -83,7 +109,9 @@ export class Formulario implements OnInit {
         datos.descripcion || '',
         datos.tipo || '',
         datos.asignacion || '',
-        datos.categoria || ''
+        datos.categoria || '',
+        this.archivoSeleccionado, // Pasamos el archivo nuevo si hay
+        this.imagenActual         // Pasamos la URL vieja (o vacia si el usuario la borro)
       );
       alert("¡Ticket actualizado con exito!");
 
@@ -143,6 +171,11 @@ export class Formulario implements OnInit {
     } else {
       this.archivoSeleccionado = null; // Si cancelo la seleccion, vacio el bolsillo
     }
+  }
+
+  eliminarImagenActual() {
+    this.imagenActual = ''; // vacio la imagen vieja
+    this.archivoSeleccionado = null; // Vacio por si habia elegido algo nuevo y se arrepintio
   }
 
   cancelar() {//cancelar accion por ahora al editar, uso enrutador ara volver a incidentes sin guardar

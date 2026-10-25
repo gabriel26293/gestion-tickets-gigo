@@ -1,0 +1,52 @@
+<!--DIR18 - MEJORA PARA EDITAR LOS TICKETS TODO ESTE DOCUMENTO A ESO SE DEDICA-->
+
+<div style="max-width: 700px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+  <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 0;">
+    🔍 Detalle del Incidente #{{ ticketActual?.id_ticket | slice:0:5 | uppercase }}
+  </h2>
+
+  @if (cargando) {
+    <div style="text-align: center; padding: 40px;">
+      <p style="font-weight: bold; color: #7f8c8d; font-size: 1.2em;">⏳ Cargando incidente desde la nube...</p>
+    </div>
+    } @else if (ticketActual) {
+        <div style="margin-bottom: 20px;">
+        <p><strong>Solicitante:</strong> {{ ticketActual.solicitante }}</p>
+        <p><strong>Título:</strong> {{ ticketActual.titulo }}</p>
+        <p><strong>Tipo:</strong> {{ ticketActual.tipo }}</p>
+        <p><strong>Asignación:</strong> {{ ticketActual.asignacion }}</p>
+        <p><strong>Categoría:</strong> {{ ticketActual.categoria }}</p>
+        <p><strong>Fecha de Creación:</strong> {{ ticketActual.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}</p>
+        <p><strong>Estado:</strong> 
+            @if (ticketActual.abierto) {
+            <span style="color: #e74c3c; font-weight: bold;">Abierto</span>
+            } @else {
+            <span style="color: #2ecc71; font-weight: bold;">Resuelto</span>
+            }
+        </p>
+        </div>
+
+        <div style="margin-bottom: 25px; background: #f8f9fa; padding: 15px; border-radius: 6px; border-left: 4px solid #3498db;">
+        <h4 style="margin-top: 0; color: #2c3e50;">Descripción Detallada:</h4>
+        <p style="white-space: pre-wrap; color: #555; line-height: 1.5;">{{ ticketActual.descripcion }}</p>
+        </div>
+
+        @if (ticketActual.imagenUrl) {
+        <div style="margin-bottom: 25px;">
+            <h4 style="color: #2c3e50;">Evidencia Fotográfica:</h4>
+            <a [href]="ticketActual.imagenUrl" target="_blank" title="Abrir imagen en tamaño real">
+            <img [src]="ticketActual.imagenUrl" alt="Evidencia en Alta Resolución" style="max-width: 100%; max-height: 400px; border-radius: 6px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            </a>
+        </div>
+    }
+
+    <button (click)="volver()" style="background-color: #7f8c8d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+      ⬅ Volver al Listado
+    </button>
+  } @else {
+    <p style="color: #e74c3c; font-weight: bold;">No se encontró el incidente solicitado.</p>
+    <button (click)="volver()" style="background-color: #7f8c8d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+      Volver
+    </button>
+  }
+</div>

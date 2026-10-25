@@ -202,14 +202,23 @@ export class TicketService {
   }
 
   // DIR#9C (ref doc): ACTUALIZAR (PUT)
-  async actualizarTicket(idBuscado: string, tituloNuevo: string, descripcionNueva: string, tipoNuevo: string, asignacionNueva: string, categoriaNueva: string) {
+  async actualizarTicket(idBuscado: string, tituloNuevo: string, descripcionNueva: string, tipoNuevo: string, asignacionNueva: string, categoriaNueva: string, archivoNuevo: File | null, urlImagenActual: string) {//#DIR20 AGREGE archivoNuevo
+    let urlFinal = urlImagenActual;
+
+    if (archivoNuevo !== null) { //#DIR20 Si el usuario subio una foto nueva, la guardamos en la nube
+      const rutaAlmacenamiento = ref(this.storage, `tickets/${archivoNuevo.name}`);
+      await uploadBytes(rutaAlmacenamiento, archivoNuevo);
+      urlFinal = await getDownloadURL(rutaAlmacenamiento);
+    }
+
     const referencia = doc(this.firestore, 'tickets', idBuscado); // Buscamos el documento exacto
     await updateDoc(referencia, {
       titulo: tituloNuevo,
       descripcion: descripcionNueva,
       tipo: tipoNuevo,
       asignacion: asignacionNueva,
-      categoria: categoriaNueva
+      categoria: categoriaNueva,
+      imagenUrl: urlFinal // #DIR20 GUARDO la URL final (nueva, vieja o vacia)
     });
     this.obtenerTicketsDeFirestore();
   }

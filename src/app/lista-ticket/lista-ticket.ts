@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
 import { FiltroTicketsPipe } from '../pipes/filtro-tickets-pipe'; //#DIR7 pedido del profe nuevo pipe
 import {  signal } from '@angular/core';//DIR8 Uso de signals (Parte C)
 import { SlicePipe, UpperCasePipe} from '@angular/common'; //#DIR10 Hash Corto para mejorar la UX del usuario (sobre el id de ticket).. ya se que podiamos agregarlo arriba pero queria seguir un orden ;)
+import { ExportarCsvService } from '../exportar-csv.service'; //#DIR21 solo para exportar csv
 
 @Component({
   selector: 'app-lista-ticket',
@@ -19,12 +20,14 @@ export class ListaTicket implements OnInit {
   cantidadVisible = signal(0);//#DIR8 Uso de signals (Parte C)
 
   //para la seguridad
-  usuarioLogueado: string = '';
-  rolLogueado: string = '';
+  usuarioLogueado: string = ''; //tambien sirve para mostrar correo apenas me logeo, ademas de cuando creo ticke //#DIR17 mejora para ver roll
+  rolLogueado: string = '';//ambien sirve para mostrar correo/roll apenas me logeo, ademas de cuando creo ticke //#DIR17 mejora para ver roll
 
-  constructor(private miServicio: TicketService) {}
+  constructor(private miServicio: TicketService, 
+  private exportadorCsv: ExportarCsvService) // #DIR21 SUMO el servicio de exportacion
+  {}
 
-  ngOnInit() {
+  ngOnInit() { //mi clase para ver el roll
     // al abrir grilla vemos el rol del que esta mirando
     const sesion = localStorage.getItem('sesion_usuario');
     if (sesion !== null) {
@@ -105,6 +108,9 @@ export class ListaTicket implements OnInit {
   eliminarTicket(id_ticket_buscado: string | undefined) {
     if(id_ticket_buscado) this.miServicio.eliminarTicket(id_ticket_buscado);
   }
-
+  
+  exportarCSV() {// #DIR21 Disparo la descarga del cvs delegando al servicio
+    this.exportadorCsv.descargarCSV(this.ticketsMostrados, 'Gigo_Incidentes.csv');
+  }
 
 }

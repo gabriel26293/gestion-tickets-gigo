@@ -3,6 +3,7 @@ import { Formulario } from './formulario/formulario';
 import { ListaTicket } from './lista-ticket/lista-ticket';
 import { LoginComponent } from './login/login';
 import { authGuard } from '../guardianes/auth-guard';//#DIR4 importo al patova implementado en auth-guard.ts
+import { DetalleTicket } from '../detalle-ticket/detalle-ticket';//DIR18 MEJORA PARA ver/consultar DE TICKETS 
 
 export const rutas: Routes = [
   
@@ -17,6 +18,8 @@ export const rutas: Routes = [
   { path: 'nuevo', component: Formulario, canActivate: [authGuard] },
   { path: 'editar/:id', component: Formulario, canActivate: [authGuard] },
   //canActivate: [authGuard] // <--- con el canActive lo activo
+
+  { path: 'detalle/:id', component: DetalleTicket }, ////DIR18 MEJORA PARA EDICION DE TICKET
     
 
   // Ruta por defecto: si entra vacio lo redirigimos a los incidentes, luego veo si lo cambio
