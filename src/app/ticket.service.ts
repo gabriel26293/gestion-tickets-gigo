@@ -213,7 +213,7 @@ export class TicketService {
       const coleccion = collection(this.firestore, 'tickets');
       await addDoc(coleccion, nuevoIncidente); // Lo sube a la bd
       
-      //#DIR27 MEJORA YA NO ES NECESARIO this.obtenerTicketsDeFirestore(); // Refrescamos la grilla pidiendo los datos actualizados
+      //#DIR27 MEJORA YA NO ES NECESARIO uso onSnapshot this.obtenerTicketsDeFirestore(); // Refrescamos la grilla pidiendo los datos actualizados
     }
   
   obtenerTicketPorId(idBuscado: string) {// Buscar uno solo localmente (Para autocompletar el formulario al editar)
@@ -240,7 +240,7 @@ export class TicketService {
       categoria: categoriaNueva,
       imagenUrl: urlFinal // #DIR20 GUARDO la URL final (nueva, vieja o vacia)
     });
-    this.obtenerTicketsDeFirestore();
+    //#DIR27 MEJORA YA NO ES NECESARIO uso onSnapshot this.obtenerTicketsDeFirestore();
   }
 
 // DIR#9C: ACTUALIZAR ESTADO (PUT) - #DIR25 Agregamos la justificacion
@@ -250,26 +250,26 @@ export class TicketService {
       abierto: false,
       justificacionResolucion: justificacion
     });
-    this.obtenerTicketsDeFirestore();
+   //#DIR27 MEJORA YA NO ES NECESARIO uso onSnapshot this.obtenerTicketsDeFirestore();
   }
 
 // DIR#9D: BORRAR (DELETE) 
   async eliminarTicket(idBuscado: string) {
     const referencia = doc(this.firestore, 'tickets', idBuscado);
     await deleteDoc(referencia);
-    this.obtenerTicketsDeFirestore();
+    //#DIR27 MEJORA YA NO ES NECESARIO uso onSnapshot this.obtenerTicketsDeFirestore();
   }
 
   // #DIR26 MEJORA Apagar alerta de chat al entrar al ticket, despues de aca me voy a detalle-ticket.ts para apagar el apagado automatico en ngOnInit()
-  async apagarAlerta(idBuscado: string, rolLogueado: string) {
-    const referencia = doc(this.firestore, 'tickets', idBuscado);
-    
-    if (rolLogueado === 'admin' || rolLogueado === 'administrador' || rolLogueado === 'ADMIN') {
-      await updateDoc(referencia, { alertaAdmin: false });
-    } else {
-      await updateDoc(referencia, { alertaUser: false });
-    }
-    this.obtenerTicketsDeFirestore();
+  async apagarAlerta(idBuscado: string, validacionAdmin: boolean) {
+      const referencia = doc(this.firestore, 'tickets', idBuscado);
+      
+      if (validacionAdmin === true) {
+        await updateDoc(referencia, { alertaAdmin: false });
+      } else {
+        await updateDoc(referencia, { alertaUser: false });
+      }
+   //#DIR27 MEJORA YA NO ES NECESARIO uso onSnapshot this.obtenerTicketsDeFirestore();
   }
 
 

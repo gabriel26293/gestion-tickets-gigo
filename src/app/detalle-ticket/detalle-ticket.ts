@@ -58,7 +58,7 @@ export class DetalleTicket implements OnInit {
 
             //#DIR26 MEJORA para apagarle la campanita al ver el mensaje. De aca salto directo a lista-ticket.html para la magia
               const sesion = localStorage.getItem('sesion_usuario');
-              if (sesion !== null) {
+              /*CODIGO VIEJO #DIR27 if (sesion !== null) {
                 const datosSesion = JSON.parse(sesion);
                 
                 let rolDetectado = '';// Validamos si la propiedad se llama rol o role
@@ -68,7 +68,7 @@ export class DetalleTicket implements OnInit {
                   rolDetectado = datosSesion.role;
                 }
                 this.miServicio.apagarAlerta(this.ticketActual.id_ticket, rolDetectado);
-              }
+              }*/
 
 
           }
@@ -81,6 +81,13 @@ export class DetalleTicket implements OnInit {
       this.cargando = false; //#DIR18 para apagar la carga SIEMPRE (falle o funcione)
       this.cdr.detectChanges(); //#FIX1 DEL #DIR18 Fuerzo a Angular a repintar la pantalla
     }
+    // #DIR26 Apagamos la alerta correspondiente al ingresar a la vista
+      const idParam = this.rutaActiva.snapshot.paramMap.get('id');
+      if (idParam !== null) {
+        let esElAdmin = this.esAdmin(); // Usamos tu función segura
+        this.miServicio.apagarAlerta(idParam, esElAdmin);
+      }
+
   }
 
   //#DIR24 MUDANZA de parte del codigo que borra el ticket, antes estaba en lista-tickets.ts, consideramos que era pegriloso
