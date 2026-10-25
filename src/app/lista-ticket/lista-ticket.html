@@ -48,6 +48,22 @@
 
 </div>
 
+<!-- #DIR28 Modulo buscador dinamico:
+ Al usar [(ngModel)] cada vez que presione una tecla en el buscador, angular automticamente pasa esa letra al pipe, y el pipe filtra al toque la tabla (actualizando el signal del contador total tambien en tiempo real) -->
+<div style="margin-bottom: 20px; background-color: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #3498db; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; gap: 15px; align-items: center;">
+  <strong style="color: #2c3e50;">Buscador:</strong>
+  
+  <select [(ngModel)]="criterioBusqueda" name="criterioBusqueda" id="criterioBusqueda" style="padding: 8px; border-radius: 4px; border: 1px solid #bdc3c7; outline: none; cursor: pointer;">
+    <option value="id_ticket">ID de Ticket</option>
+    <option value="solicitante">Solicitante</option>
+    <option value="tipo">Tipo</option>
+    <option value="asignacion">Asignacion</option>
+    <option value="categoria">Categoria</option>
+  </select>
+
+  <input type="text" [(ngModel)]="textoBusqueda" name="textoBusqueda" id="textoBusqueda" placeholder="Escriba para buscar..." style="flex: 1; padding: 8px 15px; border-radius: 4px; border: 1px solid #bdc3c7; outline: none;">
+</div>
+
 
 <p style="color: #7f8c8d;">
   <!--Total de incidentes en pantalla: <strong>{{ ticketsMostrados.length }}</strong> <br> --><!--#DIR8 quedo viejo, ahora uso signal a pedido del profe en la siguiente linea-->
@@ -76,7 +92,7 @@
   </thead>
   <tbody>
     <!--@for (ticket of ticketsMostrados; track ticket.id_ticket) {-->
-    @for (ticket of ticketsMostrados | filtroTickets: filtroActual: cantidadVisible; track ticket.id_ticket) {<!--el HTML le pasa el Signal como un tubo extra al Pipe para que el lo actualice-->
+    @for (ticket of ticketsMostrados | filtroTickets: filtroActual : cantidadVisible : criterioBusqueda : textoBusqueda; track ticket.id_ticket) {<!--el html le pasa el signal como un tubo extra al pipe para que el lo actualice-->
       <tr style="border-bottom: 1px solid #ddd;">
         <td style="padding: 12px; font-weight: bold;">#{{ ticket.id_ticket | slice:0:5 | uppercase }}</td> <!--#DIR10 agregamos para parcear el id de ticket slice y uppercase-->
         <td style="padding: 12px;">{{ ticket.solicitante }}</td>

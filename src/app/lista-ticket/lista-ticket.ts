@@ -20,6 +20,8 @@ export class ListaTicket implements OnInit {
 
   filtroActual: string = 'todos';
   cantidadVisible = signal(0);//#DIR8 Uso de signals (Parte C)
+  criterioBusqueda: string = 'id_ticket'; // #DIR28 Variables para el buscador dinamico de aca salto a filtro-tickets-pipe.ts
+  textoBusqueda: string = '';// #DIR28 Variables para el buscador dinamico de aca salto a filtro-tickets-pipe.ts
 
   //para la seguridad
   usuarioLogueado: string = ''; //tambien sirve para mostrar correo apenas me logeo, ademas de cuando creo ticke //#DIR17 mejora para ver roll
