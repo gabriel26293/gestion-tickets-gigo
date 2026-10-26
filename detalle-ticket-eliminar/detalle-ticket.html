@@ -1,0 +1,112 @@
+<!--DIR18 - MEJORA PARA EDITAR LOS TICKETS TODO ESTE DOCUMENTO A ESO SE DEDICA-->
+
+<div style="max-width: 700px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+<!--#DIR25 MEJORA PARA EL DETALLE DE INCIDENTE SIGUIENTE LINEA-->
+  <!--h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 0;">
+    🔍 Detalle del Incidente #{{ ticketActual?.id_ticket | slice:0:5 | uppercase }}
+  </h2-->
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 0; margin-bottom: 20px;">
+    <h2 style="color: #2c3e50; margin: 0;"> <!--#DIR25 mejora para el detalle del incidente-->
+      🔍 Detalle del Incidente #{{ ticketActual?.id_ticket | slice:0:5 | uppercase }}
+    </h2>
+
+    @if (esAdmin()) {
+      <button (click)="eliminarTicket()" style="background-color: #c0392b; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9em;">
+        🗑️ Eliminar
+      </button>
+    }
+  </div>
+
+  @if (cargando) {
+    <div style="text-align: center; padding: 40px;">
+      <p style="font-weight: bold; color: #7f8c8d; font-size: 1.2em;">⏳ Cargando incidente desde la nube...</p>
+    </div>
+    } @else if (ticketActual) {
+        <div style="margin-bottom: 20px;">
+        <p><strong>Solicitante:</strong> {{ ticketActual.solicitante }}</p>
+        <p><strong>Título:</strong> {{ ticketActual.titulo }}</p>
+        <p><strong>Tipo:</strong> {{ ticketActual.tipo }}</p>
+        <p><strong>Asignación:</strong> {{ ticketActual.asignacion }}</p>
+        <p><strong>Categoría:</strong> {{ ticketActual.categoria }}</p>
+        <p><strong>Fecha de Creación:</strong> {{ ticketActual.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}</p>
+        <p><strong>Estado:</strong> 
+            @if (ticketActual.abierto) {
+            <span style="color: #e74c3c; font-weight: bold;">Abierto</span>
+            } @else {
+            <span style="color: #2ecc71; font-weight: bold;">Resuelto</span>
+            }
+        </p>
+        </div>
+
+        <div style="margin-bottom: 25px; background: #f8f9fa; padding: 15px; border-radius: 6px; border-left: 4px solid #3498db;">
+        <h4 style="margin-top: 0; color: #2c3e50;">Descripción Detallada:</h4>
+        <p style="white-space: pre-wrap; color: #555; line-height: 1.5;">{{ ticketActual.descripcion }}</p>
+        </div>
+
+        @if (ticketActual.imagenUrl) {
+        <div style="margin-bottom: 25px;">
+            <h4 style="color: #2c3e50;">Evidencia Fotográfica:</h4>
+            <a [href]="ticketActual.imagenUrl" target="_blank" title="Abrir imagen en tamaño real">
+            <img [src]="ticketActual.imagenUrl" alt="Evidencia en Alta Resolución" style="max-width: 100%; max-height: 400px; border-radius: 6px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            </a>
+        </div>
+    }
+
+   
+    @if (ticketActual.id_ticket) { <!-- #DIR23 agrego el sub..modulo de chat -->
+      <app-chat-ticket [idTicket]="ticketActual.id_ticket"></app-chat-ticket>
+    }
+
+    <!-- #DIR25 Modulo de resolucion interactiva -->
+    @if (ticketActual.abierto && esAdmin()) {
+      <div style="margin-top: 30px; padding: 20px; background-color: #fff3e0; border-radius: 8px; border-left: 4px solid #f39c12;">
+        <h4 style="margin-top: 0; color: #d35400;">⚙️ Resolución del Incidente</h4>
+
+        @if (mostrandoCajaResolucion === false) {
+          <button (click)="iniciarResolucion()" style="background-color: #f39c12; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+            ✔ Iniciar Resolución
+          </button>
+        } @else {
+          <p style="margin-bottom: 10px; font-weight: bold; color: #333;">Justificación de cierre (Obligatorio):</p>
+          <textarea [(ngModel)]="textoResolucion" placeholder="Detalle la solución técnica aplicada..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; min-height: 80px; margin-bottom: 15px;"></textarea>
+
+          <div style="display: flex; gap: 10px;">
+            <button (click)="confirmarResolucion()" style="background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+              ✅ Confirmar Cierre
+            </button>
+            <button (click)="cancelarResolucion()" style="background-color: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+              ❌ Cancelar
+            </button>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Panel de lectura si ya fue resuelto -->
+    @if (ticketActual.abierto === false && ticketActual.justificacionResolucion) {
+      <div style="margin-top: 30px; padding: 20px; background-color: #e8f8f5; border-radius: 8px; border-left: 4px solid #1abc9c;">
+        <h4 style="margin-top: 0; color: #16a085;">✅ Incidente Resuelto</h4>
+        <p style="margin: 0; color: #2c3e50; white-space: pre-wrap;"><strong>Motivo de cierre:</strong><br>{{ ticketActual.justificacionResolucion }}</p>
+      </div>
+    }
+
+    <br>
+
+    <div style="display: flex; gap: 15px; align-items: center;">
+      <button (click)="volver()" style="background-color: #7f8c8d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+        ⬅ Volver al Listado
+      </button>
+    <!--#DIR25 PARTE DE LA MEJORA es quitar el Eliminar Incidente-->  
+    <!--@if (esAdmin()) {
+        <button (click)="eliminarTicket()" style="background-color: #c0392b; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+          🗑️ Eliminar Incidente
+        </button>
+      }-->
+    </div>
+  } @else {
+    <p style="color: #e74c3c; font-weight: bold;">No se encontro el incidente solicitado.</p>
+    <button (click)="volver()" style="background-color: #7f8c8d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+      Volver
+    </button>
+  }
+</div>

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
-import { AutenticacionService } from '.././autenticacion.service'; // importo servicio de autenticacion
+import { AutenticacionService } from './autenticacion/autenticacion.service'; // importo servicio de autenticacion
 //import { FormsModule } from '@angular/forms';
 //import { TicketService, Ticket } from './ticket.service';
 //import { DatePipe } from '@angular/common';
@@ -25,7 +25,7 @@ interface Ticket{
 export class App { //clase principal
   
   //#DIR3: Inyecto0 el servicio de autenticacion ademas del enrutador
-  constructor(public enrutador: Router, private servicioAuth: AutenticacionService) {} //por ahora el enrutador lo dejamos public
+  constructor(public enrutador: Router, /*private*/public servicioAuth: AutenticacionService) {} //por ahora el enrutador lo dejamos public
 
   //#DIR3-funcion
   // Modificamos la funcion para que le avise a Firebase primero
@@ -40,7 +40,8 @@ export class App { //clase principal
       });
   }
 
-esAdmin(): boolean {//#DIR22 una de las ultimas mejoras para vlidar usuario y luego lo uso para el tablero
+  /*3MUDADO A autenticacion.services.ts
+  esAdmin(): boolean {//#DIR22 una de las ultimas mejoras para vlidar usuario y luego lo uso para el tablero
     const sesion = localStorage.getItem('sesion_usuario');
     
     if (sesion !== null) {
@@ -77,7 +78,7 @@ esAdmin(): boolean {//#DIR22 una de las ultimas mejoras para vlidar usuario y lu
     } else {
       return false;
     }
-  }
+  }*/
   /*//vieja funcion mejorada en #DIR3-funcion
     cerrarSesion() {
     localStorage.removeItem('sesion_usuario'); //borramos credenciales

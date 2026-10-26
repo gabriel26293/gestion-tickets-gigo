@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AutenticacionService } from '../../autenticacion.service'; //importo para validar con firebase
+import { AutenticacionService } from '../autenticacion/autenticacion.service'; //importo para validar con firebase
 
 export interface Usuario {
   username: string;

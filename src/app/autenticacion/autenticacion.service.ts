@@ -34,5 +34,23 @@ export class AutenticacionService {
     return signOut(this.authFirebase);
   }
 
+  // valida el rol no el usuario #MUDADO esta aca, viene de app.ts
+  esAdmin(): boolean {
+    const sesion = localStorage.getItem('sesion_usuario');
+    if (sesion !== null) {
+      const datos = JSON.parse(sesion);
+      // Validamos solo el rol, pasandolo a minusculas para simplificar
+      const rolDelUsuario = datos.role ? datos.role.toLowerCase() : '';
+      
+      if (rolDelUsuario === 'admin' || rolDelUsuario === 'administrador') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
 }
 

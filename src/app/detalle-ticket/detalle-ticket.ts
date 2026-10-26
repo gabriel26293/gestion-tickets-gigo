@@ -8,6 +8,7 @@ import { Firestore, doc, getDoc } from '@angular/fire/firestore';//IMPORTO Fires
 import {ChangeDetectorRef } from '@angular/core' //#FIX1 de #DIR18 visualizacion se rompe con f5
 import {ChatTicket } from '../chat/chat-ticket/chat-ticket'; //#DIR23 para el chat
 import { FormsModule } from '@angular/forms';//#DIR25 MEJORA PARA resolucion y justifcacion de tickets
+import { AutenticacionService } from '../autenticacion/autenticacion.service';
 
 @Component({
   selector: 'app-detalle-ticket',
@@ -26,7 +27,8 @@ export class DetalleTicket implements OnInit {
     private miServicio: TicketService,
     private enrutador: Router,
     private firestore: Firestore, // inyectamos Firestore
-    private cdr: ChangeDetectorRef  //#FIX1 inyecto el detector de cambios. Arreglo de #DIR18
+    private cdr: ChangeDetectorRef,  //#FIX1 inyecto el detector de cambios. Arreglo de #DIR18
+    private servicioAuth: AutenticacionService
   ) {}
 
   async ngOnInit() {
@@ -90,6 +92,11 @@ export class DetalleTicket implements OnInit {
 
   }
 
+  esAdmin(): boolean {
+    return this.servicioAuth.esAdmin();
+  }
+
+  /*harcodeo adios!! CODIGO VIEJO
   //#DIR24 MUDANZA de parte del codigo que borra el ticket, antes estaba en lista-tickets.ts, consideramos que era pegriloso
   esAdmin(): boolean {
     const sesion = localStorage.getItem('sesion_usuario');
@@ -123,7 +130,7 @@ export class DetalleTicket implements OnInit {
     } else {
       return false;
     }
-  }
+  }*/
 
   eliminarTicket() {
     if (this.ticketActual) {

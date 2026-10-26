@@ -4,6 +4,7 @@ import { Firestore, collection, addDoc, getDocs, query, orderBy } from '@angular
 import {onSnapshot} from '@angular/fire/firestore'; //#DIR27 MEJORA para refrescar sola la ifnromacion de firebase
 import { Mensaje } from './chat.model';
 import { doc, updateDoc } from '@angular/fire/firestore';//#DIR26 Mejora para ver mensajes pendientes en el chat, le pegamos a firestone
+import { AutenticacionService } from '../autenticacion/autenticacion.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class ChatService {
   
   listaMensajes = signal<Mensaje[]>([]);// uso signal para que el HTML se entere al toque de los mensajes nuevos
 
-  constructor(private firestore: Firestore) {}
+  constructor(private firestore: Firestore, private servicioAuth: AutenticacionService) {}
   
   /*async*/ cargarMensajes(idTicket: string) {// Leer mensajes de la subcoleccion del ticket especifico //#DIR27 le saco el async porque onSnapshot es un listener pasivo
       const rutaSubcoleccion = `tickets/${idTicket}/comentarios`;
@@ -61,6 +62,14 @@ export class ChatService {
       const referenciaTicket = doc(this.firestore, 'tickets', idTicket);// #DIR26 LOgica de notificaciones cruzadas
       let validacionAdmin = false;
 
+      // NUEVO CODIGO
+      if (this.servicioAuth.esAdmin()) {
+        
+        await updateDoc(referenciaTicket, { alertaUser: true });// Escribio el admin le encendemos la alerta al usuario
+      } else {        
+        await updateDoc(referenciaTicket, { alertaAdmin: true });// Escribio el usuario, le encendemos la alerta al admin
+      }
+      /*CODIGO VIEJO HARCODEO
       if (autorIngresado === 'admin') {
         validacionAdmin = true;
       } else if (autorIngresado === 'administrador') {
@@ -69,13 +78,14 @@ export class ChatService {
         validacionAdmin = true;
       }
 
+      /*
       if (validacionAdmin === true) {
-        // Escribió el admin, le encendemos la alerta al usuario
+        // Escribio el admin, le encendemos la alerta al usuario
         await updateDoc(referenciaTicket, { alertaUser: true });//#DIR26 MEJORA usamos los boleanos para el user y esto me avisa si tengo mensaje nuevo
       } else {
         // Escribio el usuario, le encendemos la alerta al admin
         await updateDoc(referenciaTicket, { alertaAdmin: true });//#DIR26 MEJORA usamos los boleanos para el admin y esto me avisa si tengo mensaje nuevo
-      }
+      }*/
           
       //#DIR27 ELIMINAMOS esta linea habiendo aplicado la mejora del refresh this.cargarMensajes(idTicket);// refresco la lista local para ver el mensaje que acabu de enviar
     }

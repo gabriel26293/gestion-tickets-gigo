@@ -17,7 +17,7 @@
         </li>
         <!-- #DIR22 Nuevo boton del dashboard -->
         <!-- #DIR22 Nuevo botn de dashboard (Solo Admin y mas separado estaba tdo junto) -->
-        @if (esAdmin()) {
+        @if (servicioAuth.esAdmin()) {
           <li style="margin-top:20px; margin-bottom: 20px;">
             <a routerLink="/dashboard" style="color: white; text-decoration: none; font-size: 1.1em; cursor: pointer; display: block; padding: 10px; background-color: #34495e; border-radius: 4px;">
               📈 Dashboard
