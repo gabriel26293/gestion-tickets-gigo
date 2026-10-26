@@ -8,7 +8,8 @@ import { ChatService } from '../chat.service';
   selector: 'app-chat-ticket',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './chat-ticket.html'
+  templateUrl: './chat-ticket.html',
+  styleUrl: './chat-ticket.css'
 })
 export class ChatTicket implements OnInit {
   

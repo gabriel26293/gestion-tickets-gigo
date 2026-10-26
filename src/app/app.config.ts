@@ -6,11 +6,15 @@ import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';//#DIR13 tuvimos que importar esto porque daba error y no iniciaba el login con datos (quedba en blanco). usamos Storage pero no importamos
+import { provideAnimations } from '@angular/platform-browser/animations';// lo necesitamos para el ngchart, los graficos del dashboard es una version vieja, se puede usar la siguiente:
+//import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(rutas),
+    provideAnimations(),
+    //provideAnimationsAsync(),
 
     // Enciendo Firebase con el mis datos en el proyecto (lo saque del codigo que me da firebase)
     provideFirebaseApp(() => initializeApp({

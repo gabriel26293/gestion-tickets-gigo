@@ -15,7 +15,7 @@ export class ChatService {
 
   constructor(private firestore: Firestore, private servicioAuth: AutenticacionService) {}
   
-  /*async*/ cargarMensajes(idTicket: string) {// Leer mensajes de la subcoleccion del ticket especifico //#DIR27 le saco el async porque onSnapshot es un listener pasivo
+  /*async*/ cargarMensajes(idTicket: string) {// leer mensajes de la subcoleccion del ticket especifico //#DIR27 le saco el async porque onSnapshot es un listener pasivo
       const rutaSubcoleccion = `tickets/${idTicket}/comentarios`;
       const coleccion = collection(this.firestore, rutaSubcoleccion);
           
@@ -62,12 +62,12 @@ export class ChatService {
       const referenciaTicket = doc(this.firestore, 'tickets', idTicket);// #DIR26 LOgica de notificaciones cruzadas
       let validacionAdmin = false;
 
-      // NUEVO CODIGO
+      // nuevo codigo lo cambiamos para mejorar
       if (this.servicioAuth.esAdmin()) {
         
-        await updateDoc(referenciaTicket, { alertaUser: true });// Escribio el admin le encendemos la alerta al usuario
+        await updateDoc(referenciaTicket, { alertaUser: true });// escribio el admin le encendemos la alerta al usuario
       } else {        
-        await updateDoc(referenciaTicket, { alertaAdmin: true });// Escribio el usuario, le encendemos la alerta al admin
+        await updateDoc(referenciaTicket, { alertaAdmin: true });// escribio el usuario le encendemos la alerta al admin
       }
       /*CODIGO VIEJO HARCODEO
       if (autorIngresado === 'admin') {

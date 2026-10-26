@@ -1,14 +1,58 @@
 <!--#dir23 arrancamos aca con el chat-->
-<div style="background: #f8f9fa; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-top: 30px;">
-  <h4 style="margin-top: 0; color: #2c3e50; border-bottom: 2px solid #bdc3c7; padding-bottom: 10px;">💬 Comentarios del Incidente</h4>
+<div class="chat-container">
+  <h4 class="chat-header">💬 Comentarios del Incidente</h4>
   
   <!-- contenedor de mensajes con scroll -->
-  <div style="max-height: 300px; overflow-y: auto; padding-right: 10px; margin-bottom: 15px;">
+  <div class="mensajes-area">
     
     @for (mensaje of servicioChat.listaMensajes(); track mensaje.id_mensaje) {
       
       @if (mensaje.autor === usuarioActual) {
         <!-- mensaje propio (derecha / verde) -->
+        <div class="mensaje-wrapper mensaje-propio-wrapper">
+          <div class="mensaje-caja mensaje-propio-caja">
+            <strong class="mensaje-autor mensaje-propio-autor">Tú</strong>
+            <span class="mensaje-texto">{{ mensaje.texto }}</span>
+            <small class="mensaje-fecha mensaje-propio-fecha">{{ mensaje.fecha | date:'dd/MM HH:mm' }}</small>
+          </div>
+        </div>
+      } @else {
+        <!-- mensaje de la otra persona (izq / Blanco) -->
+        <div class="mensaje-wrapper mensaje-tercero-wrapper">
+          <div class="mensaje-caja mensaje-tercero-caja">
+            <strong class="mensaje-autor mensaje-tercero-autor">{{ mensaje.autor }}</strong>
+            <span class="mensaje-texto">{{ mensaje.texto }}</span>
+            <small class="mensaje-fecha mensaje-tercero-fecha">{{ mensaje.fecha | date:'dd/MM HH:mm' }}</small>
+          </div>
+        </div>
+      }
+
+    } @empty {
+      <p class="chat-vacio">No hay comentarios todavia. Inicia la conversacion!</p>
+    }
+
+  </div>
+
+  <!-- cajita para enviar nuevo mensaje -->
+  <div class="controles-envio">
+    <input type="text" [(ngModel)]="nuevoMensaje" placeholder="Escribe un mensaje..." class="input-mensaje">
+    <button (click)="enviar()" class="btn-enviar">
+      Enviar
+    </button>
+  </div>
+</div>
+
+<!--CODIGO VIEJO sin separar ccs-->
+<!--div style="background: #f8f9fa; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-top: 30px;"-->
+  <!--h4 style="margin-top: 0; color: #2c3e50; border-bottom: 2px solid #bdc3c7; padding-bottom: 10px;">💬 Comentarios del Incidente</h4-->
+  
+  <!-- contenedor de mensajes con scroll -->
+  <!--div style="max-height: 300px; overflow-y: auto; padding-right: 10px; margin-bottom: 15px;">
+    
+    @for (mensaje of servicioChat.listaMensajes(); track mensaje.id_mensaje) {
+      
+      @if (mensaje.autor === usuarioActual) {
+        < mensaje propio (derecha / verde) >
         <div style="text-align: right; margin-bottom: 15px;">
           <div style="display: inline-block; background-color: #dcf8c6; padding: 10px 15px; border-radius: 15px 15px 0 15px; max-width: 80%; text-align: left; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
             <strong style="color: #27ae60; font-size: 0.85em; display: block; margin-bottom: 3px;">Tú</strong>
@@ -17,7 +61,7 @@
           </div>
         </div>
       } @else {
-        <!-- mensaje de la otra persona (izq / Blanco) -->
+        < mensaje de la otra persona (izq / Blanco) >
         <div style="text-align: left; margin-bottom: 15px;">
           <div style="display: inline-block; background-color: white; border: 1px solid #eee; padding: 10px 15px; border-radius: 15px 15px 15px 0; max-width: 80%; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
             <strong style="color: #2980b9; font-size: 0.85em; display: block; margin-bottom: 3px;">{{ mensaje.autor }}</strong>
@@ -31,13 +75,13 @@
       <p style="text-align: center; color: #7f8c8d; font-style: italic; font-size: 0.9em;">No hay comentarios todavia. ¡Inicia la conversacion!</p>
     }
 
-  </div>
+  </div-->
 
   <!-- cajita para enviar nuevo mensaje -->
-  <div style="display: flex; gap: 10px;">
+  <!--div style="display: flex; gap: 10px;">
     <input type="text" [(ngModel)]="nuevoMensaje" placeholder="Escribe un mensaje..." style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 20px; outline: none;">
     <button (click)="enviar()" style="background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold;">
       Enviar
     </button>
   </div>
-</div>
+</div-->
